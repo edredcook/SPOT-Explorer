@@ -1,0 +1,5684 @@
+{
+  "schema_version": 1,
+  "source": {
+    "name": "Natural Earth Admin 0 map units",
+    "version": "5.1.1",
+    "year": "year not stated",
+    "retrieved_on": "2026-10-15",
+    "license": "Public domain",
+    "license_url": "https://www.naturalearthdata.com/about/terms-of-use/",
+    "attribution": "Made with Natural Earth. Public-domain display boundaries.",
+    "primary_scale": "1:50,000,000",
+    "supplementary_scale": "1:10,000,000",
+    "sources": [
+      {
+        "scale": "50m",
+        "version": "5.1.1",
+        "url": "https://naciscdn.org/naturalearth/50m/cultural/ne_50m_admin_0_map_units.zip",
+        "page": "https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-admin-0-details/",
+        "sha256": "f449ec126985e5aab30aea4b439c2d9eb0c5d40bd722fc1036ad3b6477e25cdd",
+        "bytes": 816908,
+        "source_feature_count": 265,
+        "member_sha256": {
+          "ne_50m_admin_0_map_units.README.html": "1f63a3454f4fd04acfa8758dc401bfc3e419a98909a7471480acbadc65955e3b",
+          "ne_50m_admin_0_map_units.VERSION.txt": "548358969090d629b41888f5fe664ac31b7203dfd849f7c1ef820ac055b62191",
+          "ne_50m_admin_0_map_units.cpg": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+          "ne_50m_admin_0_map_units.dbf": "8bb233952390170d0995aebaa2b73b3536c4b25e357a0f56e25178192857741d",
+          "ne_50m_admin_0_map_units.prj": "98aaf3d1c0ecadf1a424a4536de261c3daf4e373697cb86c40c43b989daf52eb",
+          "ne_50m_admin_0_map_units.shp": "6516849ff791927f0d5f5e1cdc003267d10d1ba50497e143e712071584c5efc3",
+          "ne_50m_admin_0_map_units.shx": "d0b3186537fac38941a5f43d19e8752cdee21c405164aa054f7e0e12f1a98569"
+        }
+      },
+      {
+        "scale": "10m",
+        "version": "5.1.1",
+        "url": "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_map_units.zip",
+        "page": "https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-details/",
+        "sha256": "45bebe2aaf8bf42b9daf4428594925bcb11eabd32fe9dc6e0acf681438053eb5",
+        "bytes": 5003719,
+        "source_feature_count": 298,
+        "member_sha256": {
+          "ne_10m_admin_0_map_units.README.html": "a3ff0772bca41d798bd5f3527fdaa43993deac2b031e35316679e3d16ef19105",
+          "ne_10m_admin_0_map_units.VERSION.txt": "548358969090d629b41888f5fe664ac31b7203dfd849f7c1ef820ac055b62191",
+          "ne_10m_admin_0_map_units.cpg": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+          "ne_10m_admin_0_map_units.dbf": "0e0c5817fbf299fe9f65ba5f1e5abe66b5a84d6d16bda5b7fafba3861f2e5b20",
+          "ne_10m_admin_0_map_units.prj": "a02a27b1d1982c8516d83398e85a3c8b1aef1713c13ef4d84d7bde17430c07c4",
+          "ne_10m_admin_0_map_units.shp": "e62f2508578b812aeca46cd3d2f208e0a6ff141fb0d4048c0d984839f7917bcc",
+          "ne_10m_admin_0_map_units.shx": "5d5081948127a1b3153866ba6d6671df47ba26522175482ada82f1d413328c39"
+        }
+      }
+    ]
+  },
+  "summary": {
+    "total_entities": 246,
+    "matched_entities": 246,
+    "unmatched_entities": 0,
+    "total_features": 270,
+    "mapped_features": 263,
+    "unmapped_features": 7,
+    "features_by_scale": {
+      "50m": 263,
+      "10m": 7
+    }
+  },
+  "entities": [
+    {
+      "spot_id": "ABW",
+      "name": "Aruba",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321097"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321097",
+          "name": "Aruba",
+          "gu_a3": "ABW",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "AFG",
+      "name": "Afghanistan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320319"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320319",
+          "name": "Afghanistan",
+          "gu_a3": "AFG",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "AGO",
+      "name": "Angola",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320323"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320323",
+          "name": "Angola",
+          "gu_a3": "AGO",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "AIA",
+      "name": "Anguilla",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320703"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320703",
+          "name": "Anguilla",
+          "gu_a3": "AIA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ALA",
+      "name": "Åland",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320621"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320621",
+          "name": "Aland",
+          "gu_a3": "ALD",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ALB",
+      "name": "Albania",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320325"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320325",
+          "name": "Albania",
+          "gu_a3": "ALB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "AND",
+      "name": "Andorra",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320327"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320327",
+          "name": "Andorra",
+          "gu_a3": "AND",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ARE",
+      "name": "United Arab Emirates",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320329"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320329",
+          "name": "United Arab Emirates",
+          "gu_a3": "ARE",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ARG",
+      "name": "Argentina",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320331"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320331",
+          "name": "Argentina",
+          "gu_a3": "ARG",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ARM",
+      "name": "Armenia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320333"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320333",
+          "name": "Armenia",
+          "gu_a3": "ARM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ASM",
+      "name": "American Samoa",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321357"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321357",
+          "name": "American Samoa",
+          "gu_a3": "ASM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ATG",
+      "name": "Antigua and Barbuda",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320347",
+        "1159320349"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320347",
+          "name": "Antigua",
+          "gu_a3": "ACA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159320349",
+          "name": "Barbuda",
+          "gu_a3": "ACB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "AUS",
+      "name": "Australia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320355",
+        "1159320353"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320355",
+          "name": "Australia",
+          "gu_a3": "AUS",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        },
+        {
+          "feature_id": "1159320353",
+          "name": "Ashmore and Cartier Islands",
+          "gu_a3": "ATC",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3",
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "AUT",
+      "name": "Austria",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320379"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320379",
+          "name": "Austria",
+          "gu_a3": "AUT",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "AZE",
+      "name": "Azerbaijan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320381"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320381",
+          "name": "Azerbaijan",
+          "gu_a3": "AZE",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BDI",
+      "name": "Burundi",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320387"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320387",
+          "name": "Burundi",
+          "gu_a3": "BDI",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BEL",
+      "name": "Belgium",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320395",
+        "1159320397",
+        "1159320391"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320395",
+          "name": "Flemish Region",
+          "gu_a3": "BFR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159320397",
+          "name": "Walloon Region",
+          "gu_a3": "BWR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159320391",
+          "name": "Brussels Capital Region",
+          "gu_a3": "BCR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "BEN",
+      "name": "Benin",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320399"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320399",
+          "name": "Benin",
+          "gu_a3": "BEN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BES",
+      "name": "Bonaire, Sint Eustatius and Saba",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321107"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321107",
+          "name": "Caribbean Netherlands",
+          "gu_a3": "NLY",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BFA",
+      "name": "Burkina Faso",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320405"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320405",
+          "name": "Burkina Faso",
+          "gu_a3": "BFA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BGD",
+      "name": "Bangladesh",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320407"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320407",
+          "name": "Bangladesh",
+          "gu_a3": "BGD",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BGR",
+      "name": "Bulgaria",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320409"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320409",
+          "name": "Bulgaria",
+          "gu_a3": "BGR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BHR",
+      "name": "Bahrain",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320413"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320413",
+          "name": "Bahrain",
+          "gu_a3": "BHR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BHS",
+      "name": "Bahamas",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320415"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320415",
+          "name": "The Bahamas",
+          "gu_a3": "BHS",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BIH",
+      "name": "Bosnia and Herzegovina",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320423",
+        "1159320421"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320423",
+          "name": "Republic Srpska",
+          "gu_a3": "BIS",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159320421",
+          "name": "Bosnia and Herzegovina",
+          "gu_a3": "BHF",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "BLM",
+      "name": "Saint-Barthélemy",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320633"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320633",
+          "name": "Saint Barthelemy",
+          "gu_a3": "BLM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BLR",
+      "name": "Belarus",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320427"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320427",
+          "name": "Belarus",
+          "gu_a3": "BLR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BLZ",
+      "name": "Belize",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320431"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320431",
+          "name": "Belize",
+          "gu_a3": "BLZ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BMU",
+      "name": "Bermuda",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320705"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320705",
+          "name": "Bermuda",
+          "gu_a3": "BMU",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BOL",
+      "name": "Bolivia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320439"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320439",
+          "name": "Bolivia",
+          "gu_a3": "BOL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BRA",
+      "name": "Brazil",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320441"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320441",
+          "name": "Brazil",
+          "gu_a3": "BRA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BRB",
+      "name": "Barbados",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320449"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320449",
+          "name": "Barbados",
+          "gu_a3": "BRB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BRN",
+      "name": "Brunei",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320451"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320451",
+          "name": "Brunei",
+          "gu_a3": "BRN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BTN",
+      "name": "Bhutan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320453"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320453",
+          "name": "Bhutan",
+          "gu_a3": "BTN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "BWA",
+      "name": "Botswana",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320461"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320461",
+          "name": "Botswana",
+          "gu_a3": "BWA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CAF",
+      "name": "Central African Republic",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320463"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320463",
+          "name": "Central African Republic",
+          "gu_a3": "CAF",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CAN",
+      "name": "Canada",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320467"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320467",
+          "name": "Canada",
+          "gu_a3": "CAN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CCK",
+      "name": "Cocos Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320367"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320367",
+          "name": "Cocos (Keeling) Islands",
+          "gu_a3": "CCK",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CHE",
+      "name": "Switzerland",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320491"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320491",
+          "name": "Switzerland",
+          "gu_a3": "CHE",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CHL",
+      "name": "Chile",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320493"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320493",
+          "name": "Chile",
+          "gu_a3": "CHL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CHN",
+      "name": "China",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320471"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320471",
+          "name": "China",
+          "gu_a3": "CHN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CIV",
+      "name": "Côte d'Ivoire",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320507"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320507",
+          "name": "Ivory Coast",
+          "gu_a3": "CIV",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CMR",
+      "name": "Cameroon",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320509"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320509",
+          "name": "Cameroon",
+          "gu_a3": "CMR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "COD",
+      "name": "Democratic Republic of the Congo",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320513"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320513",
+          "name": "Democratic Republic of the Congo",
+          "gu_a3": "COD",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "COG",
+      "name": "Republic of Congo",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320515"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320515",
+          "name": "Republic of the Congo",
+          "gu_a3": "COG",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "COK",
+      "name": "Cook Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321129"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321129",
+          "name": "Cook Islands",
+          "gu_a3": "COK",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "COL",
+      "name": "Colombia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320517"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320517",
+          "name": "Colombia",
+          "gu_a3": "COL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "COM",
+      "name": "Comoros",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320521"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320521",
+          "name": "Comoros",
+          "gu_a3": "COM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CPV",
+      "name": "Cape Verde",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320523"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320523",
+          "name": "Cabo Verde",
+          "gu_a3": "CPV",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CRI",
+      "name": "Costa Rica",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320525"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320525",
+          "name": "Costa Rica",
+          "gu_a3": "CRI",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CUB",
+      "name": "Cuba",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320527"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320527",
+          "name": "Cuba",
+          "gu_a3": "CUB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CUW",
+      "name": "Curaçao",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321099"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321099",
+          "name": "Curaçao",
+          "gu_a3": "CUW",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CXR",
+      "name": "Christmas Island",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320369"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320369",
+          "name": "Christmas Island",
+          "gu_a3": "CXR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CYM",
+      "name": "Cayman Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320707"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320707",
+          "name": "Cayman Islands",
+          "gu_a3": "CYM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CYP",
+      "name": "Cyprus",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320533"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320533",
+          "name": "Cyprus",
+          "gu_a3": "CYP",
+          "source_scale": "10m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "CZE",
+      "name": "Czech Republic",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320535"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320535",
+          "name": "Czechia",
+          "gu_a3": "CZE",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "DEU",
+      "name": "Germany",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320539"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320539",
+          "name": "Germany",
+          "gu_a3": "DEU",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "DJI",
+      "name": "Djibouti",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320541"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320541",
+          "name": "Djibouti",
+          "gu_a3": "DJI",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "DMA",
+      "name": "Dominica",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320543"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320543",
+          "name": "Dominica",
+          "gu_a3": "DMA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "DNK",
+      "name": "Denmark",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320547"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320547",
+          "name": "Denmark",
+          "gu_a3": "DNK",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "DOM",
+      "name": "Dominican Republic",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320563"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320563",
+          "name": "Dominican Republic",
+          "gu_a3": "DOM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "DZA",
+      "name": "Algeria",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320565"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320565",
+          "name": "Algeria",
+          "gu_a3": "DZA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ECU",
+      "name": "Ecuador",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320567"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320567",
+          "name": "Ecuador",
+          "gu_a3": "ECU",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "EGY",
+      "name": "Egypt",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320575"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320575",
+          "name": "Egypt",
+          "gu_a3": "EGY",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ERI",
+      "name": "Eritrea",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320581"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320581",
+          "name": "Eritrea",
+          "gu_a3": "ERI",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ESH",
+      "name": "Western Sahara",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321223"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321223",
+          "name": "Western Sahara",
+          "gu_a3": "SAH",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ESP",
+      "name": "Spain",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320587"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320587",
+          "name": "Spain",
+          "gu_a3": "ESP",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "EST",
+      "name": "Estonia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320615"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320615",
+          "name": "Estonia",
+          "gu_a3": "EST",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ETH",
+      "name": "Ethiopia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320617"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320617",
+          "name": "Ethiopia",
+          "gu_a3": "ETH",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "FIN",
+      "name": "Finland",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320623"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320623",
+          "name": "Finland",
+          "gu_a3": "FIN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "FJI",
+      "name": "Fiji",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320625"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320625",
+          "name": "Fiji",
+          "gu_a3": "FJI",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "FLK",
+      "name": "Falkland Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320711"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320711",
+          "name": "Falkland Islands",
+          "gu_a3": "FLK",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "FRA",
+      "name": "France",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320651"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320651",
+          "name": "France",
+          "gu_a3": "FXX",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "FRO",
+      "name": "Faroe Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320549"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320549",
+          "name": "Faroe Islands",
+          "gu_a3": "FRO",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "FSM",
+      "name": "Micronesia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320691"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320691",
+          "name": "Federated States of Micronesia",
+          "gu_a3": "FSM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GAB",
+      "name": "Gabon",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320693"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320693",
+          "name": "Gabon",
+          "gu_a3": "GAB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GBR",
+      "name": "United Kingdom",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320749",
+        "1159320747",
+        "1159320745",
+        "1159320743"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320749",
+          "name": "Wales",
+          "gu_a3": "WLS",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159320747",
+          "name": "Scotland",
+          "gu_a3": "SCT",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159320745",
+          "name": "Northern Ireland",
+          "gu_a3": "NIR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159320743",
+          "name": "England",
+          "gu_a3": "ENG",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "GEO",
+      "name": "Georgia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320783"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320783",
+          "name": "Georgia",
+          "gu_a3": "GEG",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GGY",
+      "name": "Guernsey",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320715"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320715",
+          "name": "Guernsey",
+          "gu_a3": "GGY",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GHA",
+      "name": "Ghana",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320793"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320793",
+          "name": "Ghana",
+          "gu_a3": "GHA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GIB",
+      "name": "Gibraltar",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320719"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320719",
+          "name": "Gibraltar",
+          "gu_a3": "GIB",
+          "source_scale": "10m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GIN",
+      "name": "Guinea",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320795"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320795",
+          "name": "Guinea",
+          "gu_a3": "GIN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GLP",
+      "name": "Guadeloupe",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320653"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320653",
+          "name": "Guadeloupe",
+          "gu_a3": "GLP",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GMB",
+      "name": "Gambia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320797"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320797",
+          "name": "Gambia",
+          "gu_a3": "GMB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GNB",
+      "name": "Guinea-Bissau",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320799"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320799",
+          "name": "Guinea-Bissau",
+          "gu_a3": "GNB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GNQ",
+      "name": "Equatorial Guinea",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320801"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320801",
+          "name": "Equatorial Guinea",
+          "gu_a3": "GNQ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GRC",
+      "name": "Greece",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320811"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320811",
+          "name": "Greece",
+          "gu_a3": "GRC",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GRD",
+      "name": "Grenada",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320813"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320813",
+          "name": "Grenada",
+          "gu_a3": "GRD",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GRL",
+      "name": "Greenland",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320551"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320551",
+          "name": "Greenland",
+          "gu_a3": "GRL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GTM",
+      "name": "Guatemala",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320815"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320815",
+          "name": "Guatemala",
+          "gu_a3": "GTM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GUF",
+      "name": "French Guiana",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320655"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320655",
+          "name": "French Guiana",
+          "gu_a3": "GUF",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GUM",
+      "name": "Guam",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321359"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321359",
+          "name": "Guam",
+          "gu_a3": "GUM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "GUY",
+      "name": "Guyana",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320817"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320817",
+          "name": "Guyana",
+          "gu_a3": "GUY",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "HKG",
+      "name": "Hong Kong",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320473"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320473",
+          "name": "Hong Kong S.A.R.",
+          "gu_a3": "HKG",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "HND",
+      "name": "Honduras",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320827"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320827",
+          "name": "Honduras",
+          "gu_a3": "HND",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "HRV",
+      "name": "Croatia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320833"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320833",
+          "name": "Croatia",
+          "gu_a3": "HRV",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "HTI",
+      "name": "Haiti",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320839"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320839",
+          "name": "Haiti",
+          "gu_a3": "HTI",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "HUN",
+      "name": "Hungary",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320841"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320841",
+          "name": "Hungary",
+          "gu_a3": "HUN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "IDN",
+      "name": "Indonesia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320845"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320845",
+          "name": "Indonesia",
+          "gu_a3": "IDN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "IMN",
+      "name": "Isle of Man",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320721"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320721",
+          "name": "Isle of Man",
+          "gu_a3": "IMN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "IND",
+      "name": "India",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320847"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320847",
+          "name": "India",
+          "gu_a3": "IND",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "IRL",
+      "name": "Ireland",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320877"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320877",
+          "name": "Ireland",
+          "gu_a3": "IRL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "IRN",
+      "name": "Iran",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320881"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320881",
+          "name": "Iran",
+          "gu_a3": "IRN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "IRQ",
+      "name": "Iraq",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320887"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320887",
+          "name": "Iraq",
+          "gu_a3": "IRQ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ISL",
+      "name": "Iceland",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320917"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320917",
+          "name": "Iceland",
+          "gu_a3": "ISL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ISR",
+      "name": "Israel",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320895"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320895",
+          "name": "Israel",
+          "gu_a3": "ISR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ITA",
+      "name": "Italy",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320919"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320919",
+          "name": "Italy",
+          "gu_a3": "ITA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "JAM",
+      "name": "Jamaica",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320931"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320931",
+          "name": "Jamaica",
+          "gu_a3": "JAM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "JEY",
+      "name": "Jersey",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320725"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320725",
+          "name": "Jersey",
+          "gu_a3": "JEY",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "JOR",
+      "name": "Jordan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320935"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320935",
+          "name": "Jordan",
+          "gu_a3": "JOR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "JPN",
+      "name": "Japan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320937"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320937",
+          "name": "Japan",
+          "gu_a3": "JPN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "KAZ",
+      "name": "Kazakhstan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320967"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320967",
+          "name": "Kazakhstan",
+          "gu_a3": "KAZ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "KEN",
+      "name": "Kenya",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320971"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320971",
+          "name": "Kenya",
+          "gu_a3": "KEN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "KGZ",
+      "name": "Kyrgyzstan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320977"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320977",
+          "name": "Kyrgyzstan",
+          "gu_a3": "KGZ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "KHM",
+      "name": "Cambodia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320979"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320979",
+          "name": "Cambodia",
+          "gu_a3": "KHM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "KIR",
+      "name": "Kiribati",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320981"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320981",
+          "name": "Kiribati",
+          "gu_a3": "KIR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "KNA",
+      "name": "Saint Kitts and Nevis",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320983"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320983",
+          "name": "Saint Kitts and Nevis",
+          "gu_a3": "KNA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "KOR",
+      "name": "South Korea",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320985"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320985",
+          "name": "South Korea",
+          "gu_a3": "KOR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "KWT",
+      "name": "Kuwait",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321009"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321009",
+          "name": "Kuwait",
+          "gu_a3": "KWT",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LAO",
+      "name": "Laos",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321011"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321011",
+          "name": "Laos",
+          "gu_a3": "LAO",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LBN",
+      "name": "Lebanon",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321013"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321013",
+          "name": "Lebanon",
+          "gu_a3": "LBN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LBR",
+      "name": "Liberia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321015"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321015",
+          "name": "Liberia",
+          "gu_a3": "LBR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LBY",
+      "name": "Libya",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321017"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321017",
+          "name": "Libya",
+          "gu_a3": "LBY",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LCA",
+      "name": "Saint Lucia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321019"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321019",
+          "name": "Saint Lucia",
+          "gu_a3": "LCA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LIE",
+      "name": "Liechtenstein",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321021"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321021",
+          "name": "Liechtenstein",
+          "gu_a3": "LIE",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LKA",
+      "name": "Sri Lanka",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321025"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321025",
+          "name": "Sri Lanka",
+          "gu_a3": "LKA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LSO",
+      "name": "Lesotho",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321027"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321027",
+          "name": "Lesotho",
+          "gu_a3": "LSO",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LTU",
+      "name": "Lithuania",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321029"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321029",
+          "name": "Lithuania",
+          "gu_a3": "LTU",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LUX",
+      "name": "Luxembourg",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321031"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321031",
+          "name": "Luxembourg",
+          "gu_a3": "LUX",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "LVA",
+      "name": "Latvia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321033"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321033",
+          "name": "Latvia",
+          "gu_a3": "LVA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MAC",
+      "name": "Macao",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320475"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320475",
+          "name": "Macao S.A.R",
+          "gu_a3": "MAC",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MAF",
+      "name": "Saint-Martin",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320639"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320639",
+          "name": "Saint Martin",
+          "gu_a3": "MAF",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MAR",
+      "name": "Morocco",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321035"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321035",
+          "name": "Morocco",
+          "gu_a3": "MAR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MCO",
+      "name": "Monaco",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321043"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321043",
+          "name": "Monaco",
+          "gu_a3": "MCO",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MDA",
+      "name": "Moldova",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321045"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321045",
+          "name": "Moldova",
+          "gu_a3": "MDA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MDG",
+      "name": "Madagascar",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321051"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321051",
+          "name": "Madagascar",
+          "gu_a3": "MDG",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MDV",
+      "name": "Maldives",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321053"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321053",
+          "name": "Maldives",
+          "gu_a3": "MDV",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MEX",
+      "name": "Mexico",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321055"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321055",
+          "name": "Mexico",
+          "gu_a3": "MEX",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MHL",
+      "name": "Marshall Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321057"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321057",
+          "name": "Marshall Islands",
+          "gu_a3": "MHL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MKD",
+      "name": "Macedonia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321061"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321061",
+          "name": "North Macedonia",
+          "gu_a3": "MKD",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MLI",
+      "name": "Mali",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321063"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321063",
+          "name": "Mali",
+          "gu_a3": "MLI",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MLT",
+      "name": "Malta",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321065"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321065",
+          "name": "Malta",
+          "gu_a3": "MLT",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MMR",
+      "name": "Myanmar",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321067"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321067",
+          "name": "Myanmar",
+          "gu_a3": "MMR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MNE",
+      "name": "Montenegro",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321069"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321069",
+          "name": "Montenegro",
+          "gu_a3": "MNE",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MNG",
+      "name": "Mongolia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321071"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321071",
+          "name": "Mongolia",
+          "gu_a3": "MNG",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MNP",
+      "name": "Northern Mariana Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321361"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321361",
+          "name": "Northern Mariana Islands",
+          "gu_a3": "MNP",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MOZ",
+      "name": "Mozambique",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321073"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321073",
+          "name": "Mozambique",
+          "gu_a3": "MOZ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MRT",
+      "name": "Mauritania",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321075"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321075",
+          "name": "Mauritania",
+          "gu_a3": "MRT",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MSR",
+      "name": "Montserrat",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320727"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320727",
+          "name": "Montserrat",
+          "gu_a3": "MSR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MTQ",
+      "name": "Martinique",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320657"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320657",
+          "name": "Martinique",
+          "gu_a3": "MTQ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MUS",
+      "name": "Mauritius",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321079"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321079",
+          "name": "Mauritius",
+          "gu_a3": "MUS",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MWI",
+      "name": "Malawi",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321081"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321081",
+          "name": "Malawi",
+          "gu_a3": "MWI",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MYS",
+      "name": "Malaysia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321083"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321083",
+          "name": "Malaysia",
+          "gu_a3": "MYS",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "MYT",
+      "name": "Mayotte",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320659"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320659",
+          "name": "Mayotte",
+          "gu_a3": "MYT",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NAM",
+      "name": "Namibia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321085"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321085",
+          "name": "Namibia",
+          "gu_a3": "NAM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NCL",
+      "name": "New Caledonia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320641"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320641",
+          "name": "New Caledonia",
+          "gu_a3": "NCL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NER",
+      "name": "Niger",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321087"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321087",
+          "name": "Niger",
+          "gu_a3": "NER",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NFK",
+      "name": "Norfolk Island",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320365"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320365",
+          "name": "Norfolk Island",
+          "gu_a3": "NFK",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NGA",
+      "name": "Nigeria",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321089"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321089",
+          "name": "Nigeria",
+          "gu_a3": "NGA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NIC",
+      "name": "Nicaragua",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321091"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321091",
+          "name": "Nicaragua",
+          "gu_a3": "NIC",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NIU",
+      "name": "Niue",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321133"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321133",
+          "name": "Niue",
+          "gu_a3": "NIU",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NLD",
+      "name": "Netherlands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321101"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321101",
+          "name": "Netherlands",
+          "gu_a3": "NLD",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NOR",
+      "name": "Norway",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321109"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321109",
+          "name": "Norway",
+          "gu_a3": "NOR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NPL",
+      "name": "Nepal",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321121"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321121",
+          "name": "Nepal",
+          "gu_a3": "NPL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NRU",
+      "name": "Nauru",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321123"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321123",
+          "name": "Nauru",
+          "gu_a3": "NRU",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "NZL",
+      "name": "New Zealand",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321135"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321135",
+          "name": "New Zealand",
+          "gu_a3": "NZL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "OMN",
+      "name": "Oman",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321151"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321151",
+          "name": "Oman",
+          "gu_a3": "OMN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PAK",
+      "name": "Pakistan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321153"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321153",
+          "name": "Pakistan",
+          "gu_a3": "PAK",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PAN",
+      "name": "Panama",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321161"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321161",
+          "name": "Panama",
+          "gu_a3": "PAN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PCN",
+      "name": "Pitcairn Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320729"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320729",
+          "name": "Pitcairn Islands",
+          "gu_a3": "PCN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PER",
+      "name": "Peru",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321163"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321163",
+          "name": "Peru",
+          "gu_a3": "PER",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PHL",
+      "name": "Philippines",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321169"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321169",
+          "name": "Philippines",
+          "gu_a3": "PHL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PLW",
+      "name": "Palau",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321171"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321171",
+          "name": "Palau",
+          "gu_a3": "PLW",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PNG",
+      "name": "Papua New Guinea",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321177",
+        "1159321175"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321177",
+          "name": "Papua New Guinea",
+          "gu_a3": "PNX",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159321175",
+          "name": "Bougainville",
+          "gu_a3": "PNB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "POL",
+      "name": "Poland",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321179"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321179",
+          "name": "Poland",
+          "gu_a3": "POL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PRI",
+      "name": "Puerto Rico",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321363"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321363",
+          "name": "Puerto Rico",
+          "gu_a3": "PRI",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PRK",
+      "name": "North Korea",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321181"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321181",
+          "name": "North Korea",
+          "gu_a3": "PRK",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PRT",
+      "name": "Portugal",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321191",
+        "1159321193",
+        "1159321189"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321191",
+          "name": "Madeira",
+          "gu_a3": "PMD",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159321193",
+          "name": "Portugal",
+          "gu_a3": "PRX",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159321189",
+          "name": "Azores",
+          "gu_a3": "PAZ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "PRY",
+      "name": "Paraguay",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321195"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321195",
+          "name": "Paraguay",
+          "gu_a3": "PRY",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "PSE",
+      "name": "Palestina",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320901",
+        "1159320903"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320901",
+          "name": "Gaza",
+          "gu_a3": "GAZ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159320903",
+          "name": "West Bank",
+          "gu_a3": "WEB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "PYF",
+      "name": "French Polynesia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320643"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320643",
+          "name": "French Polynesia",
+          "gu_a3": "PYF",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "QAT",
+      "name": "Qatar",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321197"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321197",
+          "name": "Qatar",
+          "gu_a3": "QAT",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "REU",
+      "name": "Reunion",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320661"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320661",
+          "name": "Reunion",
+          "gu_a3": "REU",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ROU",
+      "name": "Romania",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321199"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321199",
+          "name": "Romania",
+          "gu_a3": "ROU",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "RUS",
+      "name": "Russia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321201"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321201",
+          "name": "Russia",
+          "gu_a3": "RUS",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "RWA",
+      "name": "Rwanda",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321219"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321219",
+          "name": "Rwanda",
+          "gu_a3": "RWA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SAU",
+      "name": "Saudi Arabia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321225"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321225",
+          "name": "Saudi Arabia",
+          "gu_a3": "SAU",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SDN",
+      "name": "Sudan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321229"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321229",
+          "name": "Sudan",
+          "gu_a3": "SDN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SEN",
+      "name": "Senegal",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321243"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321243",
+          "name": "Senegal",
+          "gu_a3": "SEN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SGP",
+      "name": "Singapore",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321247"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321247",
+          "name": "Singapore",
+          "gu_a3": "SGP",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SHN",
+      "name": "Saint Helena",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320733"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320733",
+          "name": "Saint Helena",
+          "gu_a3": "SHN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SJM",
+      "name": "Svalbard and Jan Mayen",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321115",
+        "1159321119"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321115",
+          "name": "Jan Mayen",
+          "gu_a3": "NJM",
+          "source_scale": "50m",
+          "match_method": "explicit_named_unit_crosswalk",
+          "note": "Jan Mayen belongs to the release's combined Svalbard and Jan Mayen reporting entity, not its Norway result."
+        },
+        {
+          "feature_id": "1159321119",
+          "name": "Svalbard",
+          "gu_a3": "NSV",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3",
+        "explicit_named_unit_crosswalk"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "SLB",
+      "name": "Solomon Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321249"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321249",
+          "name": "Solomon Islands",
+          "gu_a3": "SLB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SLE",
+      "name": "Sierra Leone",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321251"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321251",
+          "name": "Sierra Leone",
+          "gu_a3": "SLE",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SLV",
+      "name": "El Salvador",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321253"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321253",
+          "name": "El Salvador",
+          "gu_a3": "SLV",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SMR",
+      "name": "San Marino",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321255"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321255",
+          "name": "San Marino",
+          "gu_a3": "SMR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SOM",
+      "name": "Somalia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321261",
+        "1159321259"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321261",
+          "name": "Somalia",
+          "gu_a3": "SOM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        },
+        {
+          "feature_id": "1159321259",
+          "name": "Somaliland",
+          "gu_a3": "SOL",
+          "source_scale": "50m",
+          "match_method": "explicit_named_unit_crosswalk",
+          "note": "The release's Somalia municipalities include Hargeysa, Boorama, Berbera and Burao. Both Natural Earth Somalia and Somaliland display the same Somalia aggregate."
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3",
+        "explicit_named_unit_crosswalk"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "SPM",
+      "name": "Saint Pierre and Miquelon",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320647"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320647",
+          "name": "Saint Pierre and Miquelon",
+          "gu_a3": "SPM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SRB",
+      "name": "Serbia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321269",
+        "1159321271"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321269",
+          "name": "Serbia",
+          "gu_a3": "SRS",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159321271",
+          "name": "Vojvodina",
+          "gu_a3": "SRV",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "SSD",
+      "name": "South Sudan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321235"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321235",
+          "name": "South Sudan",
+          "gu_a3": "SDS",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "STP",
+      "name": "São Tomé and Príncipe",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321273"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321273",
+          "name": "São Tomé and Principe",
+          "gu_a3": "STP",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SUR",
+      "name": "Suriname",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321281"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321281",
+          "name": "Suriname",
+          "gu_a3": "SUR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SVK",
+      "name": "Slovakia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321283"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321283",
+          "name": "Slovakia",
+          "gu_a3": "SVK",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SVN",
+      "name": "Slovenia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321285"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321285",
+          "name": "Slovenia",
+          "gu_a3": "SVN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SWE",
+      "name": "Sweden",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321287"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321287",
+          "name": "Sweden",
+          "gu_a3": "SWE",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SWZ",
+      "name": "Swaziland",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321289"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321289",
+          "name": "eSwatini",
+          "gu_a3": "SWZ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SXM",
+      "name": "Sint Maarten",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321103"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321103",
+          "name": "Sint Maarten",
+          "gu_a3": "SXM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SYC",
+      "name": "Seychelles",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321291"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321291",
+          "name": "Seychelles",
+          "gu_a3": "SYC",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "SYR",
+      "name": "Syria",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321295"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321295",
+          "name": "Syria",
+          "gu_a3": "SYR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TCA",
+      "name": "Turks and Caicos Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320737"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320737",
+          "name": "Turks and Caicos Islands",
+          "gu_a3": "TCA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TCD",
+      "name": "Chad",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321301"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321301",
+          "name": "Chad",
+          "gu_a3": "TCD",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TGO",
+      "name": "Togo",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321303"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321303",
+          "name": "Togo",
+          "gu_a3": "TGO",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "THA",
+      "name": "Thailand",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321305"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321305",
+          "name": "Thailand",
+          "gu_a3": "THA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TJK",
+      "name": "Tajikistan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321307"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321307",
+          "name": "Tajikistan",
+          "gu_a3": "TJK",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TKL",
+      "name": "Tokelau",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321137"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321137",
+          "name": "Tokelau",
+          "gu_a3": "TKL",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TKM",
+      "name": "Turkmenistan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321309"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321309",
+          "name": "Turkmenistan",
+          "gu_a3": "TKM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TLS",
+      "name": "Timor-Leste",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321313"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321313",
+          "name": "East Timor",
+          "gu_a3": "TLS",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TON",
+      "name": "Tonga",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321319"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321319",
+          "name": "Tonga",
+          "gu_a3": "TON",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TTO",
+      "name": "Trinidad and Tobago",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321321"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321321",
+          "name": "Trinidad and Tobago",
+          "gu_a3": "TTO",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TUN",
+      "name": "Tunisia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321327"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321327",
+          "name": "Tunisia",
+          "gu_a3": "TUN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TUR",
+      "name": "Turkey",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321331"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321331",
+          "name": "Turkey",
+          "gu_a3": "TUR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TUV",
+      "name": "Tuvalu",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321333"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321333",
+          "name": "Tuvalu",
+          "gu_a3": "TUV",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TWN",
+      "name": "Taiwan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321335"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321335",
+          "name": "Taiwan",
+          "gu_a3": "TWN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "TZA",
+      "name": "Tanzania",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321341",
+        "1159321337"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321341",
+          "name": "Zanzibar",
+          "gu_a3": "TZZ",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3_EH",
+          "note": null
+        },
+        {
+          "feature_id": "1159321337",
+          "name": "Tanzania",
+          "gu_a3": "TZA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3",
+        "Natural Earth ISO_A3_EH"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "UGA",
+      "name": "Uganda",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321343"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321343",
+          "name": "Uganda",
+          "gu_a3": "UGA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "UKR",
+      "name": "Ukraine",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321345"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321345",
+          "name": "Ukraine",
+          "gu_a3": "UKR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "URY",
+      "name": "Uruguay",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321353"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321353",
+          "name": "Uruguay",
+          "gu_a3": "URY",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "USA",
+      "name": "United States",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321369"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321369",
+          "name": "United States of America",
+          "gu_a3": "USA",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "UZB",
+      "name": "Uzbekistan",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321405"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321405",
+          "name": "Uzbekistan",
+          "gu_a3": "UZB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "VAT",
+      "name": "Vatican City",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321407"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321407",
+          "name": "Vatican",
+          "gu_a3": "VAT",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "VCT",
+      "name": "Saint Vincent and the Grenadines",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321409"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321409",
+          "name": "Saint Vincent and the Grenadines",
+          "gu_a3": "VCT",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "VEN",
+      "name": "Venezuela",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321411"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321411",
+          "name": "Venezuela",
+          "gu_a3": "VEN",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "VGB",
+      "name": "British Virgin Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320739"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320739",
+          "name": "British Virgin Islands",
+          "gu_a3": "VGB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "VIR",
+      "name": "Virgin Islands, U.S.",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321371"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321371",
+          "name": "United States Virgin Islands",
+          "gu_a3": "VIR",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "VNM",
+      "name": "Vietnam",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321417"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321417",
+          "name": "Vietnam",
+          "gu_a3": "VNM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "VUT",
+      "name": "Vanuatu",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321421"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321421",
+          "name": "Vanuatu",
+          "gu_a3": "VUT",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "WLF",
+      "name": "Wallis and Futuna",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320649"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320649",
+          "name": "Wallis and Futuna",
+          "gu_a3": "WLF",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "WSM",
+      "name": "Samoa",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321423"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321423",
+          "name": "Samoa",
+          "gu_a3": "WSM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "XAD",
+      "name": "Akrotiri and Dhekelia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320709",
+        "1159320741"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320709",
+          "name": "Dhekelia Sovereign Base Area",
+          "gu_a3": "ESB",
+          "source_scale": "10m",
+          "match_method": "explicit_named_unit_crosswalk",
+          "note": "Dhekelia is one component of the release's combined Akrotiri and Dhekelia reporting entity."
+        },
+        {
+          "feature_id": "1159320741",
+          "name": "Akrotiri Sovereign Base Area",
+          "gu_a3": "WSB",
+          "source_scale": "10m",
+          "match_method": "explicit_named_unit_crosswalk",
+          "note": "Akrotiri is one component of the release's combined Akrotiri and Dhekelia reporting entity."
+        }
+      ],
+      "match_method": [
+        "explicit_named_unit_crosswalk"
+      ],
+      "note": "Same reporting value on each matched unit; not separate statistical observations."
+    },
+    {
+      "spot_id": "XKO",
+      "name": "Kosovo",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321007"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321007",
+          "name": "Kosovo",
+          "gu_a3": "KOS",
+          "source_scale": "50m",
+          "match_method": "explicit_named_unit_crosswalk",
+          "note": "Natural Earth Kosovo matches the release's Kosovo key XKO."
+        }
+      ],
+      "match_method": [
+        "explicit_named_unit_crosswalk"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "XNC",
+      "name": "Northern Cyprus",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320531"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320531",
+          "name": "Northern Cyprus",
+          "gu_a3": "CYN",
+          "source_scale": "10m",
+          "match_method": "explicit_named_unit_crosswalk",
+          "note": "Natural Earth Northern Cyprus matches the release's Northern Cyprus key XNC."
+        }
+      ],
+      "match_method": [
+        "explicit_named_unit_crosswalk"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "XPI",
+      "name": "Paracel Islands",
+      "status": "mapped",
+      "feature_ids": [
+        "1159320477"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159320477",
+          "name": "Paracel Islands",
+          "gu_a3": "PFA",
+          "source_scale": "10m",
+          "match_method": "explicit_named_unit_crosswalk",
+          "note": "Natural Earth Paracel Islands matches the separately reported release key XPI; its parent ADMIN code is not used."
+        }
+      ],
+      "match_method": [
+        "explicit_named_unit_crosswalk"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "YEM",
+      "name": "Yemen",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321425"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321425",
+          "name": "Yemen",
+          "gu_a3": "YEM",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ZAF",
+      "name": "South Africa",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321431"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321431",
+          "name": "South Africa",
+          "gu_a3": "ZAF",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ZMB",
+      "name": "Zambia",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321439"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321439",
+          "name": "Zambia",
+          "gu_a3": "ZMB",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    },
+    {
+      "spot_id": "ZWE",
+      "name": "Zimbabwe",
+      "status": "mapped",
+      "feature_ids": [
+        "1159321441"
+      ],
+      "map_units": [
+        {
+          "feature_id": "1159321441",
+          "name": "Zimbabwe",
+          "gu_a3": "ZWE",
+          "source_scale": "50m",
+          "match_method": "Natural Earth ISO_A3",
+          "note": null
+        }
+      ],
+      "match_method": [
+        "Natural Earth ISO_A3"
+      ],
+      "note": null
+    }
+  ],
+  "unmatched": [],
+  "unmapped_geometry": [
+    {
+      "feature_id": "1159320335",
+      "name": "Antarctica",
+      "gu_a3": "ATA"
+    },
+    {
+      "feature_id": "1159320361",
+      "name": "Heard Island and McDonald Islands",
+      "gu_a3": "HMD"
+    },
+    {
+      "feature_id": "1159320511",
+      "name": "Cyprus No Mans Area",
+      "gu_a3": "CNM"
+    },
+    {
+      "feature_id": "1159320631",
+      "name": "French Southern and Antarctic Lands",
+      "gu_a3": "ATF"
+    },
+    {
+      "feature_id": "1159320723",
+      "name": "British Indian Ocean Territory",
+      "gu_a3": "IOT"
+    },
+    {
+      "feature_id": "1159320731",
+      "name": "South Georgia and the Islands",
+      "gu_a3": "SGS"
+    },
+    {
+      "feature_id": "1159320963",
+      "name": "Siachen Glacier",
+      "gu_a3": "KAS"
+    }
+  ],
+  "notes": [
+    "Display boundaries are Natural Earth, not the model's original GADM geometry. These are approximate visual matches, not a new spatial allocation or an exact reconstruction of municipal/model boundaries.",
+    "Map units keep separately reported overseas territories apart from their parent state. ISO_A3 is preferred; ISO_A3_EH is used when ISO_A3 is absent. Seven named-unit overrides are explicit in the preparation script and crosswalk.",
+    "One SPOT aggregate can colour several map units; its national value is repeated for display and must not be summed across polygons.",
+    "50m map units are the base. 10m adds Gibraltar, Akrotiri, Dhekelia and Paracel Islands. Cyprus and Northern Cyprus are replaced with matching 10m units, and the 10m UN buffer zone is retained as neutral background.",
+    "Jan Mayen is assigned to SPOT SJM with Svalbard. Natural Earth's Kosovo, Northern Cyprus, Akrotiri/Dhekelia and Paracel units use the corresponding native SPOT X keys.",
+    "Somaliland and Somalia both display the SPOT SOM aggregate: source municipality records include Hargeysa (SOM.18.3_1), Boorama, Berbera and Burao. No separate Somaliland result exists in this release.",
+    "Natural Earth uses de facto display boundaries. Names and outlines do not imply a position on sovereignty or agreement on territorial status.",
+    "Tiny islands can remain difficult to see at world scale; all reporting entities remain available in search and the data table.",
+    "Null geometry joins are neutral background, never zero estimates. Statistical zeros and unavailable values continue to come from the unchanged SPOT API."
+  ]
+}

@@ -5,19 +5,33 @@
 <meta name="description" content="Explore SPOT's national 2020 municipal waste and plastic emissions estimates, their pathways and uncertainty.">
 <title>SPOT · National waste atlas</title>
 <link rel="stylesheet" href="/static/styles.css">
+<script src="/static/vendor/d3.v7.9.0.min.js" defer></script>
+<script src="/static/map.js" defer></script>
 <script src="/static/app.js" defer></script>
 </head>
 <body>
 <a class="skip-link" href="#country">Skip to the data</a>
 <header class="site-header">
   <a class="wordmark" href="/" aria-label="SPOT national waste atlas home"><svg viewBox="0 0 38 38" aria-hidden="true"><circle cx="19" cy="19" r="16" fill="none" stroke="currentColor" stroke-width="1.4"/><path d="M5 12h28M3 21h32M9 30h20M19 3c-10 9-10 23 0 32M19 3c10 9 10 23 0 32" fill="none" stroke="currentColor" stroke-width="1.1"/><circle cx="29" cy="9" r="5" fill="#d9713d" stroke="#f8f7f2" stroke-width="2"/></svg><span>SPOT<span class="wordmark-sub">National waste atlas</span></span></a>
-  <nav aria-label="Main navigation"><a href="#country" class="nav-active">Explore</a><a href="#compare">Compare</a><a href="#downloads">Data</a><button class="nav-methods" data-open-methods>About the model <span aria-hidden="true">↗</span></button></nav>
+  <nav aria-label="Main navigation"><a href="#world-map" class="nav-active">Explore</a><a href="#compare">Compare</a><a href="#downloads">Data</a><button class="nav-methods" data-open-methods>About the model <span aria-hidden="true">↗</span></button></nav>
   <span class="header-edition">2020 estimates <span class="live-dot"></span></span>
 </header>
 <main>
   <section class="intro page-width" aria-labelledby="atlas-title">
     <div><p class="eyebrow"><span class="tiny-cross">+</span> THE SPOT MODEL / RESULTS ATLAS</p><h1 id="atlas-title">Where waste goes.<br><em>What escapes.</em></h1><p class="intro-copy">Explore the pathways of municipal waste and plastic — from collection to emissions — one country at a time.</p></div>
     <aside class="edition-card" aria-label="Data edition"><div class="edition-top"><span>MODELLED YEAR</span><span class="edition-icon" aria-hidden="true">↗</span></div><strong>2020</strong><div class="edition-bottom"><p><b id="entity-count">246</b> reporting entities<br>Six summary statistics</p><span>SPOT MFA<br><b class="release-version">V1.4.1-G-0426</b></span></div></aside>
+  </section>
+
+  <section id="world-map" class="page-width panel world-map-panel" aria-labelledby="world-map-title">
+    <div class="panel-heading map-heading"><div><p class="eyebrow">WORLD VIEW / 2020</p><h2 id="world-map-title">Plastic emissions, mapped.</h2><p class="chart-subtitle">Select a country to explore its published SPOT results.</p></div><button id="map-profile-link" class="text-link">Explore selected profile <span aria-hidden="true">↓</span></button></div>
+    <div class="map-controls"><fieldset class="map-basis"><legend class="sr-only">Map measurement</legend><label><input type="radio" name="map-basis" value="total" checked><span>Total emissions</span></label><label><input type="radio" name="map-basis" value="per_capita"><span>Per person</span></label></fieldset><div class="map-statistic"><label for="map-statistic">Statistic</label><select id="map-statistic"><option value="Mean">Mean</option><option value="Median">Median</option></select></div><form id="map-search-form" class="map-search"><label for="map-search" class="sr-only">Find a country on the map</label><input id="map-search" list="country-options" type="search" placeholder="Find a country or code…" autocomplete="off"><button type="submit" aria-label="Select country">→</button></form></div>
+    <div id="map-status" class="map-status" role="status" aria-live="polite">Loading the world view…</div>
+    <div class="map-stage" id="map-stage"><div id="world-map-chart" class="world-map-chart" aria-busy="true"></div><div id="map-tooltip" class="map-tooltip" role="tooltip" hidden></div><div class="map-zoom"><button id="map-zoom-out" type="button" aria-label="Zoom out">−</button><label for="map-zoom-range" class="sr-only">Map zoom</label><input id="map-zoom-range" type="range" min="1" max="6" value="1" step="0.1" aria-label="Map zoom"><button id="map-zoom-in" type="button" aria-label="Zoom in">+</button><button id="map-reset" type="button">Reset view</button></div></div>
+    <div class="map-legend-wrap"><div><div class="map-legend-title"><strong id="map-unit">Tonnes / year</strong><span id="map-statistic-label">Mean · 2020</span></div><div id="map-gradient" class="map-gradient"></div><div id="map-legend-ticks" class="map-legend-ticks"></div></div><div class="map-missing-key"><span><i class="map-zero-swatch"></i>Known zero</span><span><i class="map-missing-swatch"></i>No matched estimate</span></div></div>
+    <div class="map-selected-summary"><div><span class="eyebrow">SELECTED PROFILE</span><strong id="map-selected-name">—</strong></div><div><strong id="map-selected-value">—</strong><span id="map-selected-unit">tonnes / year</span></div><p id="map-selected-range">Published modelled estimate, 2020</p></div>
+    <details class="map-notes"><summary>How to read this map · sources and coverage</summary><div class="map-caption"><p>Colour uses a compressed scale to keep smaller values visible; the legend shows actual values. Drag to pan, use the zoom slider, or hold Ctrl while scrolling to zoom. Keyboard: focus a country, use arrow keys to move through mapped places, then Enter to select.</p><p id="map-coverage-note">All source reporting entities remain available through search and the data table, including places without a matched boundary.</p><p id="map-attribution"></p></div></details>
+    <details class="data-details"><summary>All country and territory estimates <span id="map-table-stat">Mean, 2020</span></summary><div class="map-table-toolbar"><p>Every source reporting entity is included. “Not mapped” does not mean zero.</p><a id="map-download" class="download-link" href="#">Download map data <span aria-hidden="true">↓</span></a></div><div class="table-scroll map-table-scroll"><table><caption id="map-table-caption" class="sr-only">Plastic emissions national estimates, 2020</caption><thead><tr><th scope="col">Country / territory</th><th scope="col">Code</th><th scope="col" class="number" id="map-central-heading">Mean</th><th scope="col" class="number">5th percentile</th><th scope="col" class="number">95th percentile</th><th scope="col">Boundary match</th></tr></thead><tbody id="map-table-body"></tbody></table></div></details>
+    <p class="sr-only" id="map-live" aria-live="polite"></p>
   </section>
 
   <section id="country" class="country-section page-width" aria-labelledby="country-name">

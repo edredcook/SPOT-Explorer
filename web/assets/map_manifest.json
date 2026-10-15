@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "source": {
+    "name": "Natural Earth Admin 0 map units",
+    "version": "5.1.1",
+    "year": "year not stated",
+    "retrieved_on": "2026-10-15",
+    "license": "Public domain",
+    "license_url": "https://www.naturalearthdata.com/about/terms-of-use/",
+    "attribution": "Made with Natural Earth. Public-domain display boundaries.",
+    "primary_scale": "1:50,000,000",
+    "supplementary_scale": "1:10,000,000",
+    "sources": [
+      {
+        "scale": "50m",
+        "version": "5.1.1",
+        "url": "https://naciscdn.org/naturalearth/50m/cultural/ne_50m_admin_0_map_units.zip",
+        "page": "https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-admin-0-details/",
+        "sha256": "f449ec126985e5aab30aea4b439c2d9eb0c5d40bd722fc1036ad3b6477e25cdd",
+        "bytes": 816908,
+        "source_feature_count": 265,
+        "member_sha256": {
+          "ne_50m_admin_0_map_units.README.html": "1f63a3454f4fd04acfa8758dc401bfc3e419a98909a7471480acbadc65955e3b",
+          "ne_50m_admin_0_map_units.VERSION.txt": "548358969090d629b41888f5fe664ac31b7203dfd849f7c1ef820ac055b62191",
+          "ne_50m_admin_0_map_units.cpg": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+          "ne_50m_admin_0_map_units.dbf": "8bb233952390170d0995aebaa2b73b3536c4b25e357a0f56e25178192857741d",
+          "ne_50m_admin_0_map_units.prj": "98aaf3d1c0ecadf1a424a4536de261c3daf4e373697cb86c40c43b989daf52eb",
+          "ne_50m_admin_0_map_units.shp": "6516849ff791927f0d5f5e1cdc003267d10d1ba50497e143e712071584c5efc3",
+          "ne_50m_admin_0_map_units.shx": "d0b3186537fac38941a5f43d19e8752cdee21c405164aa054f7e0e12f1a98569"
+        }
+      },
+      {
+        "scale": "10m",
+        "version": "5.1.1",
+        "url": "https://naciscdn.org/naturalearth/10m/cultural/ne_10m_admin_0_map_units.zip",
+        "page": "https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-details/",
+        "sha256": "45bebe2aaf8bf42b9daf4428594925bcb11eabd32fe9dc6e0acf681438053eb5",
+        "bytes": 5003719,
+        "source_feature_count": 298,
+        "member_sha256": {
+          "ne_10m_admin_0_map_units.README.html": "a3ff0772bca41d798bd5f3527fdaa43993deac2b031e35316679e3d16ef19105",
+          "ne_10m_admin_0_map_units.VERSION.txt": "548358969090d629b41888f5fe664ac31b7203dfd849f7c1ef820ac055b62191",
+          "ne_10m_admin_0_map_units.cpg": "3ad3031f5503a4404af825262ee8232cc04d4ea6683d42c5dd0a2f2a27ac9824",
+          "ne_10m_admin_0_map_units.dbf": "0e0c5817fbf299fe9f65ba5f1e5abe66b5a84d6d16bda5b7fafba3861f2e5b20",
+          "ne_10m_admin_0_map_units.prj": "a02a27b1d1982c8516d83398e85a3c8b1aef1713c13ef4d84d7bde17430c07c4",
+          "ne_10m_admin_0_map_units.shp": "e62f2508578b812aeca46cd3d2f208e0a6ff141fb0d4048c0d984839f7917bcc",
+          "ne_10m_admin_0_map_units.shx": "5d5081948127a1b3153866ba6d6671df47ba26522175482ada82f1d413328c39"
+        }
+      }
+    ]
+  },
+  "summary": {
+    "total_entities": 246,
+    "matched_entities": 246,
+    "unmatched_entities": 0,
+    "total_features": 270,
+    "mapped_features": 263,
+    "unmapped_features": 7,
+    "features_by_scale": {
+      "50m": 263,
+      "10m": 7
+    }
+  },
+  "notes": [
+    "Display boundaries are Natural Earth, not the model's original GADM geometry. These are approximate visual matches, not a new spatial allocation or an exact reconstruction of municipal/model boundaries.",
+    "Map units keep separately reported overseas territories apart from their parent state. ISO_A3 is preferred; ISO_A3_EH is used when ISO_A3 is absent. Seven named-unit overrides are explicit in the preparation script and crosswalk.",
+    "One SPOT aggregate can colour several map units; its national value is repeated for display and must not be summed across polygons.",
+    "50m map units are the base. 10m adds Gibraltar, Akrotiri, Dhekelia and Paracel Islands. Cyprus and Northern Cyprus are replaced with matching 10m units, and the 10m UN buffer zone is retained as neutral background.",
+    "Jan Mayen is assigned to SPOT SJM with Svalbard. Natural Earth's Kosovo, Northern Cyprus, Akrotiri/Dhekelia and Paracel units use the corresponding native SPOT X keys.",
+    "Somaliland and Somalia both display the SPOT SOM aggregate: source municipality records include Hargeysa (SOM.18.3_1), Boorama, Berbera and Burao. No separate Somaliland result exists in this release.",
+    "Natural Earth uses de facto display boundaries. Names and outlines do not imply a position on sovereignty or agreement on territorial status.",
+    "Tiny islands can remain difficult to see at world scale; all reporting entities remain available in search and the data table.",
+    "Null geometry joins are neutral background, never zero estimates. Statistical zeros and unavailable values continue to come from the unchanged SPOT API."
+  ],
+  "statistical_results_sha256": "c32e7e08fa017963de998d2be058349534feb69f80600bcd6675138657c5d758",
+  "statistical_results_modified": false,
+  "preparation": {
+    "script": "tools/prepare_map.py",
+    "dependencies": "Python standard library only",
+    "coordinate_precision_decimals": 6,
+    "degenerate_rounding_fallback_decimals": 9,
+    "simplification": "None; source vertices retained, coordinates rounded only.",
+    "ring_winding": "Clockwise exterior and counterclockwise holes, matching shapefile and D3 spherical geometry convention. This deliberately differs from RFC 7946's preferred exterior orientation."
+  },
+  "outputs": {
+    "world_boundaries.geojson": {
+      "sha256": "ac23c444a7999fd252946b0f3b0a1fd74afbc94d6a911c1222ac52946467387f",
+      "bytes": 2357665
+    },
+    "world_boundaries.geojson.gz": {
+      "sha256": "86b1fbdc32f3351b6979f44f13d5bf3d60fa762ba8d95fb2261af017405920e0",
+      "bytes": 849542
+    },
+    "map_crosswalk.json": {
+      "sha256": "f1647eed832dfc9f17d0972e498dfea0b8229eed775fffe2fef4f974fedc64f5",
+      "bytes": 129539
+    }
+  }
+}

@@ -104,17 +104,34 @@ def create_app(data_path: str | Path | None = None) -> Flask:
         args({'entity'})
         return jsonify(profile_value(entity_id()))
 
-    @app.get('/api/compare')
-    def compare():
-        selected, family, metric, statistic = selectors()
+    def summary_rows(selected, family, metric, statistic):
         rows = []
         for key in selected:
             values = values_for(key)[family][metric]
             rows.append({'id': key, 'name': geography[key]['name'],
                          'value': values.get(statistic), 'low': values.get('5th percentile'),
                          'median': values.get('Median'), 'high': values.get('95th percentile')})
+        return rows
+
+    @app.get('/api/compare')
+    def compare():
+        selected, family, metric, statistic = selectors()
         return jsonify(metric=metrics[(family, metric)], statistic=statistic,
-                       release=bundle['release'], rows=rows)
+                       release=bundle['release'], rows=summary_rows(selected, family, metric, statistic))
+
+    @app.get('/api/map')
+    def map_values():
+        args({'basis', 'statistic'})
+        basis = request.args.get('basis', 'total')
+        statistic = request.args.get('statistic', 'Mean')
+        metric_by_basis = {'total': 'plas_em', 'per_capita': 'plas_em_per_cap'}
+        if basis not in metric_by_basis:
+            raise InvalidQuery('Select total or per_capita for the map basis.')
+        if statistic not in ('Mean', 'Median'):
+            raise InvalidQuery('Select Mean or Median for the map summary.')
+        metric = metric_by_basis[basis]
+        return jsonify(basis=basis, metric=metrics[('outputs', metric)], statistic=statistic,
+                       release=bundle['release'], rows=summary_rows(entities, 'outputs', metric, statistic))
 
     @app.get('/api/download')
     def download():

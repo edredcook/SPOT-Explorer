@@ -2,7 +2,7 @@
 (function () {
   const $ = id => document.getElementById(id);
   const NS = 'http://www.w3.org/2000/svg';
-  const colours = {navy:'#183d46',teal:'#227c7b',orange:'#da7648',sage:'#8ca99b',pale:'#d9e8df',line:'#e4e9e1',muted:'#65787a'};
+  const colours = {navy:'#1B3B39',teal:'#227c7b',orange:'#DF753F',sage:'#8ca99b',pale:'#d9e8df',line:'#e4e9e1',muted:'#65787a'};
   const state = {meta:null,profile:null,entity:'IND',compare:['IND','CHN','GBR','USA'],profileRevision:0,compareRevision:0,compareController:null,profileController:null};
   const titles = {plas_em:'Plastic emissions',plas_debris_em:'Plastic debris emissions',plas_burn_em:'Plastic openly burned',wg:'Municipal waste generation',pwg:'Plastic waste generation',open_burn_MSW:'Municipal waste openly burned',col_cov_pct_gen_exc_lit:'Collection service coverage',plas_em_pct_pwg:'Plastic emissions / plastic generated'};
   const perCapita = {plas_em:'plas_em_per_cap',plas_debris_em:'plas_debris_em_per_cap',plas_burn_em:'plas_burn_em_per_cap',wg:'wg_per_cap',pwg:'pwg_per_cap'};
@@ -129,7 +129,7 @@
       document.querySelectorAll('.download-country').forEach(n=>n.textContent=profile.entity.name||entity.name);
       $('country-download').href='/api/download?entities='+encodeURIComponent(id)+'&family=all&metric=all&statistic=all';
       $('snapshot-download').href='/api/snapshot?entity='+encodeURIComponent(id);$('snapshot-download').download='SPOT_'+id+'_2020_snapshot.json';
-      setRelease(profile.release);renderHeadlines();renderFlow();renderSources();setStatus('global-status','');document.body.classList.add('has-data');
+      setRelease(profile.release);renderHeadlines();renderFlow();renderSources();setStatus('global-status','');document.body.classList.add('has-data');state.map?.select(id);
       if(updateURL){const u=new URL(location.href);u.searchParams.set('entity',id);history.replaceState(null,'',u);}
       if(!state.compare.includes(id)){state.compare=[id].concat(state.compare).slice(0,6);renderChips();}
       loadComparison();
@@ -209,7 +209,7 @@
       const fragment=document.createDocumentFragment();allEntities().forEach(e=>{const o=document.createElement('option');o.value=entityLabel(e);fragment.append(o);});$('country-options').append(fragment);
       state.compare=state.compare.filter(id=>entityFor(id));if(!state.compare.length)state.compare=(state.meta.entities||[]).slice(0,3).map(e=>e.id);
       const fromURL=new URLSearchParams(location.search).get('entity');state.entity=entityFor(fromURL)?fromURL:entityFor('IND')?'IND':state.meta.entities[0]?.id;
-      renderChips();updateBasis();if(state.entity)await loadCountry(state.entity,false);else setStatus('global-status','No reporting entities were included in this data release.',true);
+      renderChips();updateBasis();if(window.SPOTMap&&window.d3){state.map=window.SPOTMap.create({entities:state.meta.entities,onSelect:id=>loadCountry(id,true)});state.map.select(state.entity);}if(state.entity)await loadCountry(state.entity,false);else setStatus('global-status','No reporting entities were included in this data release.',true);
     }catch(e){setStatus('global-status',e.message,true);['headline-cards','flow-chart','source-chart','comparison-chart'].forEach(id=>$(id).setAttribute('aria-busy','false'));}
   }
   init();

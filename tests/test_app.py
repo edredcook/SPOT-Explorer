@@ -12,6 +12,7 @@ import json
 import math
 from pathlib import Path
 import sys
+import tempfile
 import unittest
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -195,6 +196,75 @@ class PublicApiTests(unittest.TestCase):
         self.assertEqual(profile["entity"]["id"], "world:world")
         self.assertEqual(profile["outputs"], BUNDLE["aggregated"]["world:world"]["outputs"])
 
+    def test_map_defaults_and_every_published_national_value(self):
+        definitions = {(metric["family"], metric["id"]): metric for metric in BUNDLE["metrics"]}
+        names = {entity["id"]: entity["name"] for entity in BUNDLE["entities"]}
+        default = self.get_json("/api/map")
+        self.assertEqual(default["basis"], "total")
+        self.assertEqual(default["statistic"], "Mean")
+        for basis, metric in (("total", "plas_em"), ("per_capita", "plas_em_per_cap")):
+            for statistic in ("Mean", "Median"):
+                with self.subTest(basis=basis, statistic=statistic):
+                    result = self.get_json(f"/api/map?basis={basis}&statistic={statistic}")
+                    self.assertEqual(result["release"], BUNDLE["release"])
+                    self.assertEqual(result["metric"], definitions[("outputs", metric)])
+                    self.assertEqual(result["basis"], basis)
+                    self.assertEqual(result["statistic"], statistic)
+                    self.assertEqual(len(result["rows"]), 246)
+                    self.assertEqual({row["id"] for row in result["rows"]}, set(names))
+                    for row in result["rows"]:
+                        source = BUNDLE["national"][row["id"]]["outputs"][metric]
+                        self.assertEqual(row, {"id": row["id"], "name": names[row["id"]],
+                                              "value": source[statistic], "low": source["5th percentile"],
+                                              "median": source["Median"], "high": source["95th percentile"]})
+
+    def test_map_total_and_per_person_keep_their_source_units_and_values(self):
+        total = self.get_json("/api/map?basis=total")
+        per_person = self.get_json("/api/map?basis=per_capita")
+        total_india = next(row for row in total["rows"] if row["id"] == "IND")
+        per_person_india = next(row for row in per_person["rows"] if row["id"] == "IND")
+        self.assertEqual(total["metric"]["id"], "plas_em")
+        self.assertEqual(total["metric"]["display_unit"], "tonnes/year")
+        self.assertEqual(total_india["value"], 9415457.11332653)
+        self.assertEqual(per_person["metric"]["id"], "plas_em_per_cap")
+        self.assertEqual(per_person["metric"]["display_unit"], "kg/person/year")
+        self.assertEqual(per_person_india["value"], BUNDLE["national"]["IND"]["outputs"]["plas_em_per_cap"]["Mean"])
+        self.assertNotEqual(total_india["value"], per_person_india["value"])
+
+    def test_map_preserves_missing_and_known_zero_in_an_isolated_fixture(self):
+        # Current map outputs have no null/zero point estimates. This fixture
+        # checks the contract without changing or fabricating published data.
+        metrics = [metric for metric in BUNDLE["metrics"]
+                   if metric["family"] == "outputs" and metric["id"] in ("plas_em", "plas_em_per_cap")]
+        fixture = {
+            "release": BUNDLE["release"], "statistics": BUNDLE["statistics"], "metrics": metrics,
+            "entities": [{"id": "ZER", "name": "Known zero"}, {"id": "NUL", "name": "Unavailable"}],
+            "groups": [], "aggregated": {},
+            "national": {entity_id: {"outputs": {metric["id"]: {stat: value for stat in BUNDLE["statistics"]}
+                                                   for metric in metrics}}
+                         for entity_id, value in (("ZER", 0), ("NUL", None))},
+        }
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "results.json"
+            path.write_text(json.dumps(fixture), encoding="utf-8")
+            client = create_app(path).test_client()
+            for basis in ("total", "per_capita"):
+                result = client.get(f"/api/map?basis={basis}").get_json()
+                rows = {row["id"]: row for row in result["rows"]}
+                for field in ("value", "low", "median", "high"):
+                    self.assertEqual(rows["ZER"][field], 0)
+                    self.assertIsNone(rows["NUL"][field])
+
+    def test_map_rejects_unknown_repeated_and_unsupported_selectors(self):
+        for query in ("basis=", "basis=person", "basis=TOTAL", "statistic=", "statistic=mean",
+                      "statistic=5th%20percentile", "basis=total&basis=per_capita",
+                      "basis=total&basis=total", "statistic=Mean&statistic=Median",
+                      "entity=IND", "entities=IND,GBR", "metric=plas_em", "family=outputs", "unknown=1"):
+            with self.subTest(query=query):
+                response = self.client.get("/api/map?" + query)
+                self.assertEqual(response.status_code, 400)
+                self.assertEqual(response.get_json()["error"]["code"], "invalid_query")
+
     def test_invalid_selectors_repeated_arguments_and_unknown_keys_return_400(self):
         thirteen = ",".join(x["id"] for x in BUNDLE["entities"][:13])
         invalid = [
@@ -229,7 +299,7 @@ class PublicApiTests(unittest.TestCase):
                 self.assertNotIn(private_fragment, body)
 
     def test_api_is_read_only_and_has_browser_response_headers(self):
-        for path in ("/api/profile", "/api/compare", "/api/download", "/api/snapshot", "/api/provenance"):
+        for path in ("/api/profile", "/api/compare", "/api/map", "/api/download", "/api/snapshot", "/api/provenance"):
             with self.subTest(path=path):
                 self.assertEqual(self.client.post(path, json={"entity": "IND"}).status_code, 405)
                 response = self.client.get(path)

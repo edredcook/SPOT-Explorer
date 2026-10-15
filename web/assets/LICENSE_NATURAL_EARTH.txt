@@ -1,0 +1,35 @@
+Made with Natural Earth.
+
+Display geometry source
+Natural Earth Admin 0 map units, version 5.1.1.
+Main scale: 1:50,000,000. Selected small territories and aligned Cyprus units:
+1:10,000,000. The geometry publication year is not stated on the source pages.
+Terms and data pages checked on 15 October 2026.
+
+Public domain
+Natural Earth states that its vector and raster map data are in the public
+domain and may be used, modified and distributed for personal, educational
+and commercial purposes without permission. Attribution is optional; this
+application retains it for provenance.
+
+Primary terms: https://www.naturalearthdata.com/about/terms-of-use/
+50m source: https://www.naturalearthdata.com/downloads/50m-cultural-vectors/50m-admin-0-details/
+10m source: https://www.naturalearthdata.com/downloads/10m-cultural-vectors/10m-admin-0-details/
+Actual downloads, version files, archive/member checksums and crosswalk:
+map_manifest.json and map_crosswalk.json in this directory.
+
+Display and statistical scope
+These public-domain outlines replace no SPOT statistical values. They are
+approximate display matches to the SPOT reporting entities, not the model's
+original GADM municipal or national geometry and not a new spatial allocation.
+Several map units may show the same reporting entity's national estimate.
+Those repeated display values must not be added across polygons.
+
+Natural Earth uses de facto cartographic boundaries. Names and outlines do not
+imply agreement on territorial status. The explicit SPOT crosswalk preserves
+the supplied reporting entities, including their package-specific identifiers.
+Small islands can remain hard to see at world scale; all reporting entities
+remain available through search and the complete data table.
+
+SPOT data retain their separate release attribution and licence. The
+application's software licence does not change these source notices.

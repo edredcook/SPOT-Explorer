@@ -1,4 +1,7 @@
 # Preserve audited release bytes: the manifest hashes results.json exactly.
 # Line-ending conversion would change that hash between Windows and Linux.
 data/results.json -text
+# These map assets are also bound by exact-byte provenance hashes.
+web/assets/*.geojson -text
+web/assets/*.json -text
 *.gz binary
