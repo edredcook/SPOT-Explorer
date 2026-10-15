@@ -1,0 +1,4 @@
+# Preserve audited release bytes: the manifest hashes results.json exactly.
+# Line-ending conversion would change that hash between Windows and Linux.
+data/results.json -text
+*.gz binary
