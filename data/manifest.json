@@ -1,0 +1,300 @@
+{
+  "schema_version": 1,
+  "release": {
+    "id": "V1.4.1-G-0426",
+    "version": "V1.4.1-G-0426",
+    "title": "SPOT global results",
+    "status": "published",
+    "model_year": 2020,
+    "iterations": 2000,
+    "name": "Spatio-temporal quantification of plastic pollution origins and transport (SPOT) model",
+    "component": "Material flow analysis and emissions inventory",
+    "citation_year": 2026,
+    "citation": "Cottom, J. W., Cook, E. & Velis, C. A. (2026). SPOT model - MFA Version 1.4.1-G-0426. Zenodo.",
+    "source_links": {
+      "dataset": "https://doi.org/10.5281/zenodo.22231994",
+      "methods": "https://doi.org/10.1038/s41586-024-07758-6",
+      "code": "https://github.com/SPOT-Model/SPOT-MFA"
+    },
+    "links": {
+      "dataset": "https://doi.org/10.5281/zenodo.22231994",
+      "methods": "https://doi.org/10.1038/s41586-024-07758-6",
+      "code": "https://github.com/SPOT-Model/SPOT-MFA"
+    },
+    "methodology": "Cottom, Cook & Velis (2024), with the published release's Lancet Countdown methodological updates.",
+    "scope": "Municipal solid waste and macroplastic emissions. These results describe 2020 and include modelled open-burning atmospheric emissions and exposure estimates.",
+    "uncertainty": "The 5th and 95th percentiles span a central 90% modelled interval. Mean and median are available separately.",
+    "license": "CC BY 4.0, subject to source-specific notices for reused third-party material.",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "entity_label": "countries and territories",
+    "null_note": "A missing coefficient is unavailable or undefined; it is not zero."
+  },
+  "extractor": "tools/prepare_data.py",
+  "sources": {
+    "national": {
+      "filename": "SPOT_MFA_National_results_V1.4.1-G-0426_2000i.xlsx",
+      "relative_source_path": "04-MFA/outputs/SPOT_MFA_National_results_V1.4.1-G-0426_2000i.xlsx",
+      "bytes": 3928163,
+      "sha256": "37c49dce4cf7564db41fa7835836131b8274de7bcc660a6530534a86780f0e8d",
+      "native_info_sheet": [
+        {
+          "row": 2,
+          "label": "Details",
+          "value": null
+        },
+        {
+          "row": 3,
+          "label": "Software ",
+          "value": "Spatio-temporal plastic pollution origins and transport model (SPOT) "
+        },
+        {
+          "row": 4,
+          "label": "Software version number ",
+          "value": "V1.4.1-G-0426"
+        },
+        {
+          "row": 5,
+          "label": "Release date",
+          "value": "April 2024"
+        },
+        {
+          "row": 6,
+          "label": "Dataset name",
+          "value": "SPOT_MFA_National_results_V1.4.1-G-0426_2000i.xlsx"
+        },
+        {
+          "row": 7,
+          "label": "Authors ",
+          "value": "J.W. Cottom, E. Cook, C.A. Velis"
+        },
+        {
+          "row": 8,
+          "label": "Correspondence ",
+          "value": "Costas Velis"
+        },
+        {
+          "row": 9,
+          "label": "Correspondence to",
+          "value": "C.Velis@imperial.ac.uk"
+        },
+        {
+          "row": 10,
+          "label": "Dataset description",
+          "value": "Data predicted by probabilistic MFA at municipal level are aggregated to national level. Basic statistics (5th percentile, 95th percentile, mean, median, upper & lower quartiles) presented. "
+        },
+        {
+          "row": 13,
+          "label": "Contents ",
+          "value": null
+        },
+        {
+          "row": 14,
+          "label": "01_Processes",
+          "value": "Process mass presented at national level"
+        },
+        {
+          "row": 15,
+          "label": "01a_Processes_legend",
+          "value": "Legend for 01_Processes."
+        },
+        {
+          "row": 16,
+          "label": "02_Coefficients",
+          "value": "Coefficients are calculated from process mass."
+        },
+        {
+          "row": 17,
+          "label": "02a_Coefficients_legend",
+          "value": "Legend for 02_Coefficients."
+        },
+        {
+          "row": 18,
+          "label": "03_Outputs",
+          "value": "Summary outputs derived from process mass."
+        },
+        {
+          "row": 19,
+          "label": "03a_Outputs_legend",
+          "value": "Legend for 03_Outputs."
+        }
+      ]
+    },
+    "aggregated": {
+      "filename": "SPOT_MFA_Other_aggregation_results_V1.4.1-G-0426_2000i.xlsx",
+      "relative_source_path": "04-MFA/outputs/SPOT_MFA_Other_aggregation_results_V1.4.1-G-0426_2000i.xlsx",
+      "bytes": 918188,
+      "sha256": "faa6dfb2d4057ac02e25b81ed47c61ff3aeb69c462f8f0a5746c0eaf939be2a1",
+      "native_info_sheet": [
+        {
+          "row": 2,
+          "label": "Details",
+          "value": null
+        },
+        {
+          "row": 3,
+          "label": "Software ",
+          "value": "Spatio-temporal plastic pollution origins and transport model (SPOT) "
+        },
+        {
+          "row": 4,
+          "label": "Software version number ",
+          "value": "V1.4.1-G-0426"
+        },
+        {
+          "row": 5,
+          "label": "Release date",
+          "value": "April 2024"
+        },
+        {
+          "row": 6,
+          "label": "Dataset name",
+          "value": "SPOT_MFA_Other_aggregation_results_V1.4.1-G-0426_2000i.xlsx"
+        },
+        {
+          "row": 7,
+          "label": "Authors ",
+          "value": "J.W. Cottom, E. Cook, C.A. Velis"
+        },
+        {
+          "row": 8,
+          "label": "Correspondence ",
+          "value": "Costas Velis"
+        },
+        {
+          "row": 9,
+          "label": "Correspondence to",
+          "value": "C.Velis@imperial.ac.uk"
+        },
+        {
+          "row": 10,
+          "label": "Dataset description",
+          "value": "Data predicted by probabilistic MFA at municipal level are aggregated by total (global), UN region, UN sub-region, OECD region, World Bank income category. Basic statistics (5th percentile, 95th percentile, mean, median, upper & lower quartiles) presented. "
+        },
+        {
+          "row": 13,
+          "label": "Contents ",
+          "value": null
+        },
+        {
+          "row": 14,
+          "label": "01_Processes",
+          "value": "Process mass presented at national level"
+        },
+        {
+          "row": 15,
+          "label": "01a_Processes_legend",
+          "value": "Legend for 01_Processes."
+        },
+        {
+          "row": 16,
+          "label": "02_Coefficients",
+          "value": "Coefficients are calculated from process mass."
+        },
+        {
+          "row": 17,
+          "label": "02a_Coefficients_legend",
+          "value": "Legend for 02_Coefficients."
+        },
+        {
+          "row": 18,
+          "label": "03_Outputs",
+          "value": "Summary outputs derived from process mass."
+        },
+        {
+          "row": 19,
+          "label": "03a_Outputs_legend",
+          "value": "Legend for 03_Outputs."
+        }
+      ]
+    }
+  },
+  "counts": {
+    "entities": 246,
+    "groups": 54,
+    "statistics": 6,
+    "metrics": 203,
+    "metrics_by_family": {
+      "processes": 93,
+      "coefficients": 42,
+      "outputs": 68
+    },
+    "national_sheets": {
+      "processes": {
+        "sheet": "Processes",
+        "rows": 1476,
+        "metrics": 93,
+        "values_including_null": 137268,
+        "nulls": 0,
+        "zeros": 24022
+      },
+      "coefficients": {
+        "sheet": "Coefficients",
+        "rows": 1476,
+        "metrics": 42,
+        "values_including_null": 61992,
+        "nulls": 5676,
+        "zeros": 3851
+      },
+      "outputs": {
+        "sheet": "Outputs",
+        "rows": 1476,
+        "metrics": 68,
+        "values_including_null": 100368,
+        "nulls": 0,
+        "zeros": 14769
+      }
+    },
+    "aggregate_sheets": {
+      "processes": {
+        "sheet": "Processes",
+        "rows": 324,
+        "metrics": 93,
+        "values_including_null": 30132,
+        "nulls": 0,
+        "zeros": 2086
+      },
+      "coefficients": {
+        "sheet": "Coefficients",
+        "rows": 324,
+        "metrics": 42,
+        "values_including_null": 13608,
+        "nulls": 522,
+        "zeros": 436
+      },
+      "outputs": {
+        "sheet": "Outputs",
+        "rows": 324,
+        "metrics": 68,
+        "values_including_null": 22032,
+        "nulls": 0,
+        "zeros": 1369
+      }
+    }
+  },
+  "checks": {
+    "source_hashes_unchanged": true,
+    "duplicate_keys": 0,
+    "all_source_numbers_preserved": true,
+    "quantiles_monotonic": true,
+    "world_mean_aggregation": {
+      "additive_metrics_checked": 116,
+      "maximum_relative_residual": 3.7329693226816535e-15
+    },
+    "flow_branches_checked": 3000,
+    "flow_maximum_relative_residual": 8.757470511075659e-15
+  },
+  "transformations": [
+    "Source cell numbers and nulls copied without rounding, scaling or recalculation.",
+    "Source field identifiers and country/territory keys retained.",
+    "Group identifiers formed from scheme and name slugs; original labels retained.",
+    "Readable display-unit labels; original legend units retained without numeric conversion.",
+    "Literal NA grouping labels retained as text."
+  ],
+  "output": {
+    "filename": "results.json",
+    "bytes": 11658534,
+    "gzip_filename": "results.json.gz",
+    "gzip_bytes": 3096122,
+    "sha256": "c32e7e08fa017963de998d2be058349534feb69f80600bcd6675138657c5d758"
+  }
+}

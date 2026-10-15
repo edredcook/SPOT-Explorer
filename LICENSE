@@ -1,0 +1,22 @@
+SPOT DATA ATTRIBUTION AND LICENCE NOTICE
+
+The included derived SPOT baseline results originate from:
+
+Cottom, J. W., Cook, E. & Velis, C. A. (2026).
+Spatio-temporal quantification of plastic pollution origins and transport (SPOT)
+model - MFA Version 1.4.1-G-0426 [Dataset]. Zenodo.
+https://doi.org/10.5281/zenodo.22231994
+
+The supplied source package states that, unless otherwise stated in an individual
+file or source notice, its code, input data and model outputs are provided under
+Creative Commons Attribution 4.0 International (CC BY 4.0):
+https://creativecommons.org/licenses/by/4.0/
+
+Source-specific licence and copyright notices for reused third-party inputs
+continue to apply. The explorer reorganizes selected released results into JSON,
+charts and exports; it does not change the underlying model estimates.
+
+This file preserves the supplied data attribution. It does not grant a separate
+licence for the newly written explorer application, replace third-party terms,
+or imply endorsement by the dataset authors. The application owner can add an
+explicit software licence in a later release.
