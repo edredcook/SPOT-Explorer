@@ -1,0 +1,300 @@
+"""Private municipal geometry and bounded raster maps.
+
+Only this module reads prepared vectors. Public routes should return its PNG
+bytes, metadata, or an identified native model ID, never its private database.
+All projection coordinates follow d3.geoMercator's radians/scale/translate.
+"""
+from __future__ import annotations
+
+from collections import OrderedDict
+from contextlib import closing
+from dataclasses import dataclass
+from hashlib import sha256
+from io import BytesIO
+import json
+import math
+from pathlib import Path
+import sqlite3
+import threading
+
+MAX_LATITUDE = 85.0511287798066
+MISSING_COLOUR = (205, 206, 205, 255)
+ZERO_COLOUR = (242, 241, 232, 255)
+RAMP = ((229, 240, 232), (164, 215, 203), (75, 175, 169), (35, 125, 125), (27, 59, 57))
+PAINT_POLICY = {'target_pixels_at_view_centre': 0.35, 'finest_tolerance_degrees': 0.001,
+                'maximum_tolerance_degrees': 0.064, 'quantization': 'powers of two',
+                'cache': 'One projected zoom level and exact native area for the current country',
+                'lookup': 'Finest prepared geometry retained for native-ID point identification',
+                'fallback': 'Keep valid finest geometry if display simplification becomes empty or invalid'}
+
+
+def project(lon, lat, scale, tx, ty):
+    latitude = math.radians(max(-MAX_LATITUDE, min(MAX_LATITUDE, lat)))
+    return scale * math.radians(lon) + tx, ty - scale * math.log(math.tan(math.pi / 4 + latitude / 2))
+
+
+def paint_tolerance(scale, ty, height):
+    """Quantized display LOD, approximately 0.35 px at the view centre.
+
+    Mercator stretches latitudes differently, so this is a display target,
+    not a geometric accuracy claim. Point lookup always uses finer shapes.
+    """
+    centre_y = max(-math.pi, min(math.pi, (ty - height / 2) / scale))
+    centre_latitude = math.atan(math.sinh(centre_y))
+    degrees = 0.35 * math.cos(centre_latitude) * 180 / (math.pi * scale)
+    if degrees <= 0.001:
+        return 0.001
+    return min(0.064, 0.001 * 2 ** math.floor(math.log2(degrees / 0.001)))
+
+
+def colour(value, maximum):
+    """Match the existing d3.interpolateRgbBasis sequential log1p legend.
+
+    Source values are not rewritten. Zero and negative residuals use the first
+    palette colour; exact zero has its own cream and missing is grey.
+    """
+    if isinstance(value, dict):
+        value = value.get('value')
+    if isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value):
+        return MISSING_COLOUR
+    if value == 0:
+        return ZERO_COLOUR
+    fraction = math.log1p(max(value, 0) / maximum * 100) / math.log(101) if maximum and maximum > 0 else 0
+    t = max(0.0, min(1.0, fraction)) * (len(RAMP) - 1)
+    index = min(len(RAMP) - 2, int(t))
+    t -= index
+    v1, v2 = RAMP[index], RAMP[index + 1]
+    v0 = RAMP[index - 1] if index else tuple(2 * a - b for a, b in zip(v1, v2))
+    v3 = RAMP[index + 2] if index < len(RAMP) - 2 else tuple(2 * b - a for a, b in zip(v1, v2))
+    weights = ((1 - 3 * t + 3 * t * t - t ** 3), (4 - 6 * t * t + 3 * t ** 3),
+               (1 + 3 * t + 3 * t * t - 3 * t ** 3), t ** 3)
+    channels = [max(0, min(255, round(sum(w * v[c] for w, v in zip(weights, (v0, v1, v2, v3))) / 6))) for c in range(3)]
+    return (*channels, 255)
+
+
+def polygon_parts(geometry):
+    if geometry.geom_type == 'Polygon':
+        return [geometry]
+    if geometry.geom_type in ('MultiPolygon', 'GeometryCollection'):
+        return [part for child in geometry.geoms for part in polygon_parts(child)]
+    return []
+
+
+def unwrap_geometry(geometry):
+    """Unwrap dateline rings while retaining each native feature's identity."""
+    from shapely.geometry import MultiPolygon, Polygon
+
+    west, _, east, _ = geometry.bounds
+    if -180 <= west <= east <= 180 and east - west < 180:
+        # Ordinary local units cannot cross the dateline. Keep GEOS's compact
+        # coordinates instead of rebuilding millions of Python point tuples.
+        return geometry
+
+    def ring(coordinates, centre=None):
+        output, previous = [], None
+        for coordinate in coordinates:
+            lon, lat = coordinate[:2]
+            if previous is not None:
+                lon += 360 * round((previous - lon) / 360)
+            output.append((float(lon), float(lat)))
+            previous = lon
+        middle = (min(x for x, _ in output) + max(x for x, _ in output)) / 2
+        shift = 360 * round(((centre if centre is not None else 0) - middle) / 360)
+        return [(x + shift, y) for x, y in output]
+
+    parts = []
+    for polygon in polygon_parts(geometry):
+        exterior = ring(polygon.exterior.coords)
+        centre = (min(x for x, _ in exterior) + max(x for x, _ in exterior)) / 2
+        holes = [ring(interior.coords, centre) for interior in polygon.interiors]
+        parts.append(Polygon(exterior, holes))
+    return parts[0] if len(parts) == 1 else MultiPolygon(parts)
+
+
+def circular_bounds(bounds):
+    """Smallest longitude interval covering polygon-part intervals.
+
+    A west value greater than east explicitly denotes an antimeridian crossing.
+    """
+    bounds = list(bounds)
+    if not bounds:
+        return None
+    intervals = []
+    for west, _, east, _ in bounds:
+        span = east - west
+        if span >= 359.999999:
+            return [-180.0, min(b[1] for b in bounds), 180.0, max(b[3] for b in bounds)]
+        start = (west + 180) % 360
+        end = start + span
+        intervals.extend([(start, min(360, end))] + ([(0, end - 360)] if end > 360 else []))
+    merged = []
+    for start, end in sorted(intervals):
+        if merged and start <= merged[-1][1]:
+            merged[-1][1] = max(merged[-1][1], end)
+        else:
+            merged.append([start, end])
+    gaps = [(merged[(i + 1) % len(merged)][0] + (360 if i == len(merged) - 1 else 0) - end,
+             merged[(i + 1) % len(merged)][0], end) for i, (_, end) in enumerate(merged)]
+    gap, start, end = max(gaps)
+    if gap <= 1e-9:
+        west, east = -180.0, 180.0
+    else:
+        west, east = start - 180, end - 180
+    return [west, min(b[1] for b in bounds), east, max(b[3] for b in bounds)]
+
+
+@dataclass
+class _Country:
+    features: list
+    tree: object
+    paint_key: object = None
+    paint_features: object = None
+
+
+class GeoStore:
+    """One-country LRU keeps geometry memory bounded on the small web service."""
+    def __init__(self, root):
+        self.root = Path(root).resolve()
+        self.lock = threading.RLock()
+        self.cache = OrderedDict()
+        self.manifest = None
+        try:
+            manifest = json.loads((self.root / 'manifest.json').read_text(encoding='utf-8'))
+            database = self.root / 'geometry.sqlite'
+            if manifest.get('schema') != 1 or not isinstance(manifest.get('countries'), dict):
+                return
+            if database.stat().st_size != manifest['database']['bytes']:
+                return
+            digest = sha256()
+            with database.open('rb') as stream:
+                for block in iter(lambda: stream.read(1024 * 1024), b''):
+                    digest.update(block)
+            if digest.hexdigest() != manifest['database']['sha256']:
+                return
+            self.manifest = manifest
+        except (OSError, ValueError, KeyError, TypeError):
+            pass
+
+    def metadata(self, country=None):
+        if self.manifest is None:
+            return {'available': False}
+        if country is None:
+            return {'available': True, 'count': self.manifest['count'],
+                    'countries': [{'id': key, **value} for key, value in self.manifest['countries'].items()],
+                    'source': self.manifest.get('source', {}),
+                    'simplification': {**self.manifest.get('simplification', {}), 'adaptive_paint': PAINT_POLICY}}
+        value = self.manifest['countries'].get(country)
+        return {'available': True, 'id': country, **value} if value else {'available': False}
+
+    def _country(self, country):
+        if not self.metadata(country).get('available'):
+            raise FileNotFoundError('Municipal geometry is unavailable.')
+        from shapely import from_wkb
+        from shapely.strtree import STRtree
+        with self.lock:
+            if country in self.cache:
+                self.cache.move_to_end(country)
+                return self.cache[country]
+            # Drop the previous country's arrays before loading the next one.
+            self.cache.clear()
+            try:
+                with closing(sqlite3.connect((self.root / 'geometry.sqlite').as_uri() + '?mode=ro', uri=True)) as connection:
+                    rows = connection.execute('SELECT native_id, area, geom FROM features WHERE country=? ORDER BY native_id', (country,)).fetchall()
+                features = []
+                for native_id, area, blob in rows:
+                    geometry = from_wkb(blob)
+                    features.append((native_id, area, geometry))
+                result = _Country(features, STRtree([row[2] for row in features]))
+            except Exception as exc:
+                raise FileNotFoundError('Municipal geometry is unavailable.') from exc
+            self.cache[country] = result
+            return result
+
+    def inspect(self, country, lon, lat, area=None):
+        with self.lock:
+            return self._inspect(country, lon, lat, area)
+
+    def _inspect(self, country, lon, lat, area=None):
+        if not math.isfinite(lon) or not math.isfinite(lat):
+            raise ValueError('Use finite geographic coordinates.')
+        from shapely.geometry import Point
+        data = self._country(country)
+        hits = []
+        for shifted in (lon - 360, lon, lon + 360):
+            point = Point(shifted, lat)
+            for index in data.tree.query(point):
+                native_id, native_area, geometry = data.features[int(index)]
+                if (area is None or native_area == area) and geometry.covers(point):
+                    hits.append((geometry.area, native_id))
+        return min(hits)[1] if hits else None
+
+    def _paint_features(self, data, area, tolerance):
+        key = (area, tolerance)
+        if data.paint_key == key and data.paint_features is not None:
+            return data.paint_features
+        # Release the previous projected LOD before constructing its replacement.
+        data.paint_key, data.paint_features = None, None
+        features = []
+        for native_id, native_area, finest in data.features:
+            if area is not None and native_area != area:
+                continue
+            geometry = finest
+            if tolerance > 0.001:
+                # Simplify each island separately, then validate their combined
+                # topology. Whole-multipolygon simplification is costly for
+                # coastal units with thousands of disconnected parts.
+                from shapely.geometry import MultiPolygon
+                parts = [part.simplify(tolerance, preserve_topology=True) for part in polygon_parts(finest)]
+                candidate = parts[0] if len(parts) == 1 else MultiPolygon(parts)
+                if not candidate.is_empty and candidate.is_valid and polygon_parts(candidate):
+                    geometry = candidate
+            polygons = []
+            for polygon in polygon_parts(geometry):
+                rings = [[project(x, y, 1, 0, 0) for x, y, *_ in ring.coords]
+                         for ring in [polygon.exterior, *polygon.interiors]]
+                xs, ys = zip(*rings[0])
+                polygons.append((rings, (min(xs), min(ys), max(xs), max(ys))))
+            features.append((native_id, polygons))
+        data.paint_key, data.paint_features = key, features
+        return features
+
+    def render_png(self, country, metricRowsByID, area, width, height, scale, tx, ty, max_value):
+        with self.lock:
+            return self._render_png(country, metricRowsByID, area, width, height, scale, tx, ty, max_value)
+
+    def _render_png(self, country, metricRowsByID, area, width, height, scale, tx, ty, max_value):
+        from PIL import Image, ImageDraw
+        if (not isinstance(width, int) or not isinstance(height, int) or not 1 <= width <= 2000 or
+                not 1 <= height <= 1400 or width * height > 2_000_000 or
+                any(not math.isfinite(v) for v in (scale, tx, ty)) or not 0 < scale <= 1e8):
+            raise ValueError('Use a bounded map viewport.')
+        data = self._country(country)
+        paint = self._paint_features(data, area, paint_tolerance(scale, ty, height))
+        image = Image.new('RGBA', (width, height))
+        period = 2 * math.pi * scale
+        for native_id, polygons in paint:
+            fill = colour(metricRowsByID.get(native_id), max_value)
+            for rings, bounds in polygons:
+                min_x, min_y, max_x, max_y = bounds
+                min_x, max_x = min_x * scale + tx, max_x * scale + tx
+                min_y, max_y = min_y * scale + ty, max_y * scale + ty
+                x_centre = (min_x + max_x) / 2
+                centre_copy = round((width / 2 - x_centre) / period)
+                for copy in (centre_copy - 1, centre_copy, centre_copy + 1):
+                    shift = copy * period
+                    left, right = max(0, math.floor(min_x + shift - 1)), min(width, math.ceil(max_x + shift + 1))
+                    top, bottom = max(0, math.floor(min_y - 1)), min(height, math.ceil(max_y + 1))
+                    if left >= right or top >= bottom:
+                        continue
+                    mask = Image.new('L', (right - left, bottom - top))
+                    drawing = ImageDraw.Draw(mask)
+                    transformed = [[(x * scale + tx + shift - left, y * scale + ty - top) for x, y in ring] for ring in rings]
+                    drawing.polygon(transformed[0], fill=255)
+                    for hole in transformed[1:]:
+                        drawing.polygon(hole, fill=0)
+                    image.paste(fill, (left, top, right, bottom), mask)
+        # Polygon outlines are intentionally omitted at world scale: retaining
+        # the filled area makes small municipalities visible without white wash.
+        output = BytesIO()
+        image.save(output, format='PNG', optimize=False, compress_level=5)
+        return output.getvalue()

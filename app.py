@@ -1,4 +1,4 @@
-"""Read-only explorer for the published SPOT national results.
+"""Read-only explorer for published SPOT municipal, national and regional results.
 
 Numerical model execution is deliberately outside this service. All analytical
 values come from the prepared, source-hashed release bundle.
@@ -12,6 +12,7 @@ from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory, Response
 from spot_auth import register_auth
+from municipal_api import register_municipal
 
 BASE = Path(__file__).resolve().parent
 FAMILIES = ('processes', 'coefficients', 'outputs')
@@ -77,7 +78,7 @@ def create_app(data_path: str | Path | None = None) -> Flask:
     def response_headers(response):
         response.headers['X-Content-Type-Options'] = 'nosniff'
         response.headers.setdefault('Referrer-Policy', 'strict-origin-when-cross-origin')
-        response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
+        response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
         if response.status_code == 200 and request.path.startswith('/api/') and not request.path.startswith('/api/auth/'):
             response.headers['Cache-Control'] = 'public, max-age=300'
         return response
@@ -165,6 +166,46 @@ def create_app(data_path: str | Path | None = None) -> Flask:
         return jsonify(release=bundle['release'], model_year=bundle['release'].get('model_year', 2020),
                        statistic=statistic, statistics=statistics, metrics=output_metrics, rows=rows)
 
+    @app.get('/api/spatial/groups')
+    def spatial_groups():
+        """Use published group summaries, never sums of marginal quantiles.
+
+        Membership describes which display countries receive a group's colour;
+        it is not a numerical aggregation or an allocation of the group total.
+        """
+        args({'scheme', 'statistic'})
+        scheme_fields = {'UN Region': 'region', 'UN Subregion': 'subregion',
+                         'UN Intermediate region': 'intermediate_region',
+                         'OECD region': 'oecd', 'Income category': 'income',
+                         'World': None}
+        scheme = request.args.get('scheme', 'UN Region')
+        statistic = request.args.get('statistic', 'Mean')
+        if scheme not in scheme_fields:
+            raise InvalidQuery('Select a published regional grouping.')
+        if statistic not in ('Mean', 'Median'):
+            raise InvalidQuery('Select Mean or Median for the map summary.')
+        output_metrics = [definition for (family, _), definition in metrics.items()
+                          if family == 'outputs']
+        field = scheme_fields[scheme]
+        rows = []
+        for key, group in groups.items():
+            if group['scheme'] != scheme:
+                continue
+            members = [e['id'] for e in entities.values()
+                       if field is None or e.get(field) == group['name']]
+            released = bundle['aggregated'][key]['outputs']
+            values = {definition['id']: {
+                'value': released[definition['id']].get(statistic),
+                'mean': released[definition['id']].get('Mean'),
+                'median': released[definition['id']].get('Median'),
+                'low': released[definition['id']].get('5th percentile'),
+                'high': released[definition['id']].get('95th percentile'),
+            } for definition in output_metrics}
+            rows.append({**group, 'members': members, 'values': values})
+        return jsonify(release=bundle['release'], level='regional', scheme=scheme,
+                       schemes=list(scheme_fields), statistic=statistic,
+                       metrics=output_metrics, rows=rows)
+
     @app.get('/api/download')
     def download():
         selected, family, metric, statistic = selectors(allow_all=True)
@@ -200,6 +241,7 @@ def create_app(data_path: str | Path | None = None) -> Flask:
         args(set())
         return jsonify(manifest)
 
+    register_municipal(app, bundle)
     register_auth(app)
     return app
 

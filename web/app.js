@@ -257,7 +257,7 @@
       state.compare=state.compare.filter(id=>entityFor(id));if(!state.compare.length)state.compare=(state.meta.entities||[]).slice(0,3).map(e=>e.id);
       const fromURL=new URLSearchParams(location.search).get('entity');state.entity=entityFor(fromURL)?fromURL:entityFor('IND')?'IND':state.meta.entities[0]?.id;
       renderChips();updateBasis();
-      const linkedViews=[['map','SPOTMap',{entities:state.meta.entities}],['relationships','SPOTRelationships',{meta:state.meta}],['profiles','SPOTProfiles',{meta:state.meta}],['rankings','SPOTRankings',{meta:state.meta}]];
+      const linkedViews=[['map','SPOTMap',{entities:state.meta.entities,meta:state.meta}],['relationships','SPOTRelationships',{meta:state.meta}],['profiles','SPOTProfiles',{meta:state.meta}],['rankings','SPOTRankings',{meta:state.meta}]];
       if(window.d3)linkedViews.forEach(([key,namespace,options])=>{if(window[namespace]){state[key]=window[namespace].create({...options,onSelect:id=>loadCountry(id,true)});state[key].select(state.entity);}});
       populateCountryPickers();
       if(state.entity)await loadCountry(state.entity,false);else setStatus('global-status','No reporting entities were included in this data release.',true);refreshVisibleView();

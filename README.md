@@ -19,7 +19,7 @@ Open <http://127.0.0.1:5000>. On macOS/Linux, replace `.\.venv\Scripts\python.ex
 
 1. Put **this folder's contents** in a GitHub repository, with `app.py`, `requirements.txt` and `render.yaml` at the repository root. Do not upload the parent research folder, original large workbooks, private handovers or `.venv`.
 2. In Render, create a **Blueprint** and connect that repository. Select `render.yaml`. Review the generated `spot-explorer` web service and create it.
-3. The blueprint installs the pinned dependencies, starts `gunicorn app:app` with **one worker and four threads**, and uses `/healthz` for readiness. It requests a free web-service plan and no database or persistent disk. An existing manually configured Render service must also use one worker: account tokens live in a bounded server-side memory vault, which is not shared across workers.
+3. The blueprint installs the pinned dependencies, prepares the private municipal map asset, starts `gunicorn app:app` with **one worker and four threads**, and uses `/healthz` for readiness. The first build selectively downloads the municipal GIS member from Zenodo and can take several minutes. It requests a free web-service plan and no database or persistent disk. An existing manually configured Render service must use the same build command and one worker: account tokens live in a bounded server-side memory vault, which is not shared across workers.
 4. Enable GitHub Actions for the repository. The supplied workflow checks the public API, data/export contracts and a Linux Gunicorn smoke test. Automatic deployments use Render's `checksPass` trigger. Ensure the deployment branch has the verification workflow enabled.
 5. After the initial deploy, open the Render service URL and verify a country profile, a comparison, a CSV download and the provenance panel. Check `/healthz` and `/api/provenance` directly.
 
@@ -61,12 +61,35 @@ All routes are read-only. Invalid selectors, unknown query arguments and repeate
 | `/api/download` | CSV for the same selectors as comparison |
 | `/api/snapshot?entity=IND` | Downloadable JSON country snapshot |
 | `/api/provenance` | Source and derived-file provenance manifest |
+| `/api/spatial/groups?scheme=UN%20Region&statistic=Mean` | Native regional summaries and explicit member-country IDs; schemes also include UN Subregion, UN Intermediate region, OECD region, Income category and World |
+| `/api/municipal/meta` | Municipal source hashes, all country/area counts and map coverage |
+| `/api/municipal/values?country=BRA&metric=plas_em&statistic=Mean` | One country's municipal values for one metric; optional `area` selects a native first-level area |
+| `/api/municipal/map.png` | Bounded PNG viewport from private geometry; country/metric/statistic/area plus width/height/scale/tx/ty |
+| `/api/municipal/inspect?country=BRA&metric=plas_em&lon=-46.6&lat=-23.5` | Source record at a point in the selected country/area; no nearest-name placement |
 
 Profile and snapshot default to `IND`. Comparison and CSV default to entities `IND,CHN,USA`, metric `plas_em`, family `outputs`, statistic `Mean`. CSV includes release, model year, entity identity, family, metric, statistic, value and unit. JSON represents unavailable values as `null`; CSV uses an empty value field. Known zero values remain `0`.
 
-Map selectors are `basis=total|per_capita` and `statistic=Mean|Median`; defaults are `total` and `Mean`. Total emissions use the released `plas_em` output in tonnes/year. Per-person emissions use the separate released `plas_em_per_cap` output in kg/person/year, including its own uncertainty summaries. Map requests return national entities only; regional and world profiles remain available through the country search. The map changes the linked country profile when a user selects a shape or a country in its values table.
+Map selectors are `basis=total|per_capita` and `statistic=Mean|Median`; defaults are `total` and `Mean`. Total emissions use the released `plas_em` output in tonnes/year. Per-person emissions use the separate released `plas_em_per_cap` output in kg/person/year, including its own uncertainty summaries. The legacy `/api/map` route returns national entities only. The map workspace also reads the spatial group and municipal routes below; regional and world profiles remain available through the country search. The map changes the linked country profile when a user selects a shape or a country in its values table.
 
 The atlas API accepts only `statistic=Mean|Median`, defaulting to Mean. Each row retains the released entity metadata and a `values` object keyed by output ID. Each metric contains `value`, `mean`, `median`, `low` and `high`; none is recalculated from another metric. This supplies the map concepts and country relationship charts without transferring the full research workbook to the browser.
+
+## Map levels
+
+The Level selector changes the statistical unit explicitly. Camera zoom does not silently switch a country value into a municipal value. National views can be filtered by native UN region, income category and country. Regional maps use the separately released summaries: one group colours its member countries and appears once in the table or symbols. Filtering cannot manufacture region-by-income intersections with valid native uncertainty.
+
+Municipal views load one country at a time, with native first-level area selectors, name/ID search, point inspection, a paginated table and a scoped numeric CSV. Total/per-person and Mean/Median select separate native values. This version shades municipal areas; the four existing national/regional concepts remain available at those levels. All 50,702 native units across 246 entities are included in the prepared data (SPOT release 2026, modelled year 2020). The 126 units with no modelled population keep null results. Other undefined ratios also remain null. Small source numerical residuals are preserved, including negative values down to about -2.22e-14.
+
+The browser never loads the 749 MB municipal workbook or global municipal vectors. The prepared numeric files are compressed country partitions; requests return only the selected metric. The server retains one decoded country and one country's simplified geometry, with bounded image dimensions and stale-request cancellation in the browser. Country/area colour limits change with the selected scope and appear in the legend. Performance measurements belong to the release receipt, not a blanket speed guarantee.
+
+Municipal polygons retain the native model IDs and mixed administrative levels. “Municipal” therefore does not imply the same legal administrative unit in every country. Geometry simplification is for display and hit testing only; it does not change any modelled numbers. National and regional boundaries remain Natural Earth display outlines.
+
+The raster painter uses a separate overview tolerance of approximately 0.35 pixels at the viewport centre, quantized from 0.001° to 0.064°. Zooming in restores the finest prepared display shapes. Point identification always uses those finest prepared shapes, independently of the overview paint rings. Each reporting unit remains present; invalid simplified shapes fall back to the finest valid shape. The active policy is recorded under `/api/municipal/meta.geometry.simplification.adaptive_paint`.
+
+The matching municipal GIS member comes from the [SPOT release (2026)](https://doi.org/10.5281/zenodo.22231994). Its GADM-derived boundaries carry [GADM restrictions (year not stated; checked 16 October 2026)](https://gadm.org/license.html): academic/noncommercial use is allowed, while redistribution requires permission. The service renders PNG images and does not publish municipal vectors in GitHub, static assets or downloads. Applying the noncommercial-use permission to this research website is an interpretation, not explicit written permission for this particular website; obtain clarification before commercial reuse or adding vector exports. The original notices remain applicable.
+
+`python scripts/prepare_municipal_geometry.py --download` builds the ignored `.runtime/municipal` asset from the matching release member, with length, CRC, source-hash and exact native-ID checks. A local copy can be used with `--source-gpkg PATH`. The original source is never modified. Display simplification and any validity repairs are recorded in the private manifest; its source hash and display qualifications are also reported by `/api/municipal/meta`. No vector export route exists. Numerical tables still work if the optional map asset is unavailable.
+
+`python tools/prepare_municipal.py --source-root PATH` rebuilds the compressed numeric country partitions from the released municipal Outputs worksheet and input registry. It needs `lxml` in the preparation environment, which the running website does not use. Source-file hashes, metric-specific worksheet locators, units, all country/area counts and each compressed partition's hash are retained in `data/municipal/manifest.json`.
 
 ## Analysis views
 
