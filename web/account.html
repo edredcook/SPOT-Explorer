@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer"><title>Account · SPOT Explorer</title>
+  <link rel="stylesheet" href="/static/account.css"><script src="/static/account.js" defer></script>
+</head>
+<body>
+<header><a class="brand" href="/">SPOT<span>Explorer</span></a><a href="/">Return to results</a></header>
+<main>
+  <div class="account-heading"><p class="eyebrow">SPOT account</p><h1 id="page-title">Sign in</h1><p>Accounts are by invitation. You can explore the published results without signing in.</p></div>
+  <p id="account-status" role="status" aria-live="polite">Checking account service…</p>
+  <section class="account-card" id="login-panel" hidden>
+    <h2>Welcome back</h2>
+    <form id="login-form">
+      <label for="login-email">Email address</label><input id="login-email" name="email" type="email" autocomplete="username" required maxlength="254">
+      <label for="login-password">Password</label><input id="login-password" name="password" type="password" autocomplete="current-password" required minlength="1" maxlength="1024">
+      <button type="submit">Sign in</button>
+    </form>
+    <p class="note">To join, ask the SPOT owner for a private invitation link. For a lost password, contact the owner of your authentication account.</p>
+  </section>
+  <section class="account-card" id="invitation-panel" hidden>
+    <h2>Accept your invitation</h2><p>Your private link will be verified when you continue.</p>
+    <button id="activate-button" type="button">Continue</button>
+  </section>
+  <section class="account-card" id="password-panel" hidden>
+    <h2 id="password-heading">Choose your password</h2><p id="password-note"></p>
+    <form id="password-form">
+      <label id="password-label" for="new-password">Password</label><input id="new-password" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
+      <label for="repeat-password">Repeat password</label><input id="repeat-password" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
+      <p class="note" id="password-length-note">Use at least 14 characters.</p><button type="submit">Complete SPOT account</button>
+    </form>
+  </section>
+  <section class="account-card" id="signed-in-panel" hidden>
+    <h2>Your account</h2><p id="signed-in-email"></p><p>You are signed in to SPOT. The published results remain available to everyone.</p>
+    <div class="actions"><a class="button" href="/">Explore results</a><button id="logout-button" type="button" class="secondary">Sign out</button></div>
+  </section>
+  <section class="account-card owner-card" id="owner-panel" hidden>
+    <h2>Manage SPOT invitations</h2><p>Invite a person to SPOT. This does not grant access to COP31-MFA.</p>
+    <form id="invite-form"><label for="invite-email">Email address</label><input id="invite-email" type="email" autocomplete="off" required maxlength="254"><button type="submit">Create private invitation</button></form>
+    <div id="invitation-result" hidden><label for="invitation-link">Private invitation link</label><textarea id="invitation-link" readonly rows="4" spellcheck="false"></textarea><p class="note">Share this link directly with the invited person. No email has been sent. Creating another invitation requires revoking the earlier SPOT invitation.</p><button id="copy-link" type="button" class="secondary">Copy link</button></div>
+    <h3>SPOT accounts</h3><div id="viewers-list"></div>
+  </section>
+</main><footer>SPOT Explorer · Published national results</footer>
+</body></html>

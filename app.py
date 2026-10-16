@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 
 from flask import Flask, jsonify, request, send_from_directory, Response
+from spot_auth import register_auth
 
 BASE = Path(__file__).resolve().parent
 FAMILIES = ('processes', 'coefficients', 'outputs')
@@ -75,9 +76,9 @@ def create_app(data_path: str | Path | None = None) -> Flask:
     @app.after_request
     def response_headers(response):
         response.headers['X-Content-Type-Options'] = 'nosniff'
-        response.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        response.headers.setdefault('Referrer-Policy', 'strict-origin-when-cross-origin')
         response.headers['Content-Security-Policy'] = "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none'; base-uri 'none'; frame-ancestors 'none'"
-        if response.status_code == 200 and request.path.startswith('/api/'):
+        if response.status_code == 200 and request.path.startswith('/api/') and not request.path.startswith('/api/auth/'):
             response.headers['Cache-Control'] = 'public, max-age=300'
         return response
 
@@ -199,6 +200,7 @@ def create_app(data_path: str | Path | None = None) -> Flask:
         args(set())
         return jsonify(manifest)
 
+    register_auth(app)
     return app
 
 

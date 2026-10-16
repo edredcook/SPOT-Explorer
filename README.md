@@ -1,6 +1,6 @@
 # SPOT Explorer
 
-A public, read-only explorer for the released SPOT MFA V1.4.1-G-0426 baseline results for model year 2020. Maps, country relationships, profiles and comparisons occupy separate analysis tabs. All views use the saved release; this stage does not run the model or accept uploaded data.
+A public, read-only explorer for the released SPOT MFA V1.4.1-G-0426 baseline results for model year 2020. Maps, five-source profiles, rankings, relationships, country details and comparisons occupy separate analysis tabs. All views use the saved release; this stage does not run the model or accept uploaded data. Invitation-only accounts are separate from public chart access.
 
 ## Run locally
 
@@ -19,11 +19,28 @@ Open <http://127.0.0.1:5000>. On macOS/Linux, replace `.\.venv\Scripts\python.ex
 
 1. Put **this folder's contents** in a GitHub repository, with `app.py`, `requirements.txt` and `render.yaml` at the repository root. Do not upload the parent research folder, original large workbooks, private handovers or `.venv`.
 2. In Render, create a **Blueprint** and connect that repository. Select `render.yaml`. Review the generated `spot-explorer` web service and create it.
-3. The blueprint installs the pinned dependencies, starts `gunicorn app:app`, and uses `/healthz` for readiness. It requests a free web-service plan and no database or persistent disk.
+3. The blueprint installs the pinned dependencies, starts `gunicorn app:app` with **one worker and four threads**, and uses `/healthz` for readiness. It requests a free web-service plan and no database or persistent disk. An existing manually configured Render service must also use one worker: account tokens live in a bounded server-side memory vault, which is not shared across workers.
 4. Enable GitHub Actions for the repository. The supplied workflow checks the public API, data/export contracts and a Linux Gunicorn smoke test. Automatic deployments use Render's `checksPass` trigger. Ensure the deployment branch has the verification workflow enabled.
 5. After the initial deploy, open the Render service URL and verify a country profile, a comparison, a CSV download and the provenance panel. Check `/healthz` and `/api/provenance` directly.
 
 If this app is kept inside a larger repository instead, configure the Render service root directory and workflow working directory accordingly. The supplied files assume a dedicated repository root. Domain setup and service creation happen in the hosting account; these files do not create a remote service by themselves.
+
+## Invitation-only accounts
+
+The `/account` interface provides sign-in, invitation activation and owner-only invitation management. Public charts, data tables and exports remain open. This account layer does not yet store projects or run the model.
+
+Configure these **server-side Render environment variables**, using the existing Supabase authentication project:
+
+- `SPOT_SUPABASE_URL`: the project's HTTPS origin.
+- `SPOT_SUPABASE_PUBLISHABLE_KEY`: the publishable key (legacy anon key is also supported).
+- `SPOT_SUPABASE_SECRET_KEY`: the server-only secret key (legacy service-role key is also supported).
+- `SPOT_ADMIN_EMAIL`: the confirmed provider identity that will manage invitations.
+- `SPOT_PUBLIC_ORIGIN`: the SPOT service's HTTPS origin, used for private links; Render's external URL is the fallback.
+- `SPOT_SESSION_SECRET`: an optional long random cookie-signing secret. If omitted, a fresh strong secret is generated on process startup. Restarting the service signs users out in either case because the token vault is in memory.
+
+The configured owner signs in with their existing provider password. Successful verified sign-in establishes the independent SPOT owner record. The owner can create a private invitation link and share it directly; the application does not send invitation email. Existing confirmed identities activate SPOT with their existing password and a SPOT-only one-time nonce. New identities confirm their provider invitation and choose a password. SPOT approval lives only in `app_metadata.spot_explorer`; COP31 permissions are neither copied nor granted. Revoking SPOT access leaves other applications unchanged. Lost shared passwords must be recovered through the identity service's existing owner-managed process.
+
+Keep public signup and anonymous sign-in disabled on the shared provider. Never paste keys into source, chat, logs or downloaded handovers. `.env.example` contains placeholders only; the app reads environment variables rather than loading that file automatically. Run **one web worker** while sessions use the memory vault; a shared session store is needed before scaling to multiple workers/instances. Account responses are private and not cached; provider access/refresh tokens remain server-side. Unconfigured accounts fail closed while public results continue working. See [Supabase account configuration (year not stated; accessed 2026)](https://supabase.com/docs/guides/auth/general-configuration) and [server-owned user metadata (year not stated; accessed 2026)](https://supabase.com/docs/guides/auth/users).
 
 ## Public API
 
@@ -54,10 +71,12 @@ The atlas API accepts only `statistic=Mean|Median`, defaulting to Mean. Each row
 - **Emission composition:** country pies split mean plastic emissions into debris and openly burned plastic. Pie area follows the selected total or native per-person amount. This view uses means because marginal medians and percentiles do not generally add to the median or percentile of a total.
 - **Collection and emissions:** a nine-colour map combines country thirds of collection service coverage and plastic emissions per person. Numeric class bounds appear in the key. These are display groups, not performance targets or significance tests.
 - **Relationships:** selectable country scatterplots, income/region filters, exact source units, log axes, area-scaled bubbles, source-value tooltips and a numerical table/CSV. Presets compare collection with emissions, plastic generation with emissions, debris with burning, and total emissions with emissions per person.
+- **Sources:** six-country comparisons of litter, uncollected waste, collection, disposal and recycling. Total views use each native origin mean. Additive source shares divide source means by the native total mean. Origin emissions per person are derived as source mean tonnes/year times 1,000 divided by the supplied population; the native total per-person mean is retained separately. These calculations are labelled in the table and CSV. Stacked and separate bars use means; marginal medians and percentile bounds are not stacked. The complete 246-country list is available for selection.
+- **Rankings:** total versus native per-person plastic emission ranks, or native emissions as a percentage of plastic waste generated (`plas_em_pct_pwg`). The percentage already includes multiplication by 100 and summarizes draw-level ratios; it is not recomputed from displayed mean masses. Mean/median, peer filters, a top-N slider and country highlighting are available. Exact ties use competition ranks (1, 1, 3); cutoff ties are retained. CSV/table include all 246 entities, native values and bounds, global ranks, within-filter ranks and explicit filter flags. Ranks order central estimates, not statistical certainty.
 
 These views describe cross-sectional model results for 2020. They do not provide a trend or independent evidence of causation. Associations can reflect shared model inputs and model structure. Waste-generation rates retain their native kg/person/day units; emission rates retain kg/person/year. No time sequence or annualisation is invented for display. Region and income labels remain the classifications supplied with this release; the classification year of its output income labels is not stated.
 
-Further views supported by the release include five-source emission fingerprints (`plas_litter_em`, `plas_uncol_em`, `plas_collection_em`, `plas_disp_em`, `plas_recy_em` means), rigid/flexible plastic-format comparisons, people without collection (`people_no_col`), and a derived relative 5th–95th interval width. An interval-width view would show modelled dispersion, not accuracy or a confidence score. Rigid/flexible labels describe plastic formats, not polymer categories. These are concepts for subsequent views, rather than additional outputs of this revision.
+Further views supported by the release include rigid/flexible plastic-format comparisons, people without collection (`people_no_col`), and a derived relative 5th–95th interval width. An interval-width view would show modelled dispersion, not accuracy or a confidence score. Rigid/flexible labels describe plastic formats, not polymer categories. A separately developed Sankey can be integrated as another tab.
 
 The map selection follows [Datawrapper's map guidance (2018)](https://www.datawrapper.de/blog/choroplethmaps): rate-based shading, symbols for absolute quantities, and scatterplots to inspect relationships. The concepts are implemented locally using the existing source bundle and map geometry.
 
