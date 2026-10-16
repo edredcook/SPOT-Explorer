@@ -35,6 +35,7 @@ import zlib
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from municipal_geometry import GeoStore, circular_bounds, polygon_parts, unwrap_geometry
+from municipal_paint import prepare_paint
 
 SOURCE_URL = 'https://zenodo.org/api/records/22231994/files/MFA_V1.4.1-G-0426.zip/content'
 ARCHIVE_BYTES = 1413209305
@@ -380,6 +381,7 @@ def main():
     if cached and validated_ready(cached, registry, args.tolerance):
         copy_ready(cached, args.output)
         print('Reused verified private municipal geometry cache.', flush=True)
+        prepare_paint(args.output, cached)
         return
     if args.source_gpkg:
         source = args.source_gpkg
@@ -398,6 +400,7 @@ def main():
             # A build remains valid when the host offers no persistent cache.
             print('Prepared geometry is ready; the optional cache could not be saved.', flush=True)
     print(json.dumps({'count': result['count'], 'countries': len(result['countries']), 'database': result['database']}, indent=2), flush=True)
+    prepare_paint(args.output, cached)
 
 
 if __name__ == '__main__':

@@ -242,6 +242,7 @@ class GeoStore:
         self.cache = OrderedDict()
         self.selection_key = None
         self.selection_png = None
+        self.paint_store = None
         self.manifest = None
         try:
             manifest = json.loads((self.root / 'manifest.json').read_text(encoding='utf-8'))
@@ -259,6 +260,9 @@ class GeoStore:
             self.manifest = manifest
         except (OSError, ValueError, KeyError, TypeError):
             pass
+        if self.manifest is not None:
+            from municipal_paint import PaintStore
+            self.paint_store = PaintStore(self.root / 'paint', self.manifest)
 
     def metadata(self, country=None):
         if self.manifest is None:
@@ -267,7 +271,9 @@ class GeoStore:
             return {'available': True, 'count': self.manifest['count'],
                     'countries': [{'id': key, **value} for key, value in self.manifest['countries'].items()],
                     'source': self.manifest.get('source', {}),
-                    'simplification': {**self.manifest.get('simplification', {}), 'adaptive_paint': PAINT_POLICY}}
+                    'simplification': {**self.manifest.get('simplification', {}),
+                                       'adaptive_paint': {**PAINT_POLICY,
+                                                          'prepared_cache_status': self.paint_store.status if self.paint_store else 'missing'}}}
         value = self.manifest['countries'].get(country)
         return {'available': True, 'id': country, **value} if value else {'available': False}
 
@@ -320,6 +326,14 @@ class GeoStore:
         # Release the previous projected LOD before constructing its replacement.
         data.paint_key, data.paint_features = None, None
         data.raster_key, data.raster = None, None
+        if self.paint_store is not None:
+            country = next((key for key, value in self.cache.items() if value is data), None)
+            if country is not None:
+                from municipal_paint import assignments
+                prepared = self.paint_store.load(country, tolerance, assignments(data), area)
+                if prepared is not None:
+                    data.paint_key, data.paint_features = key, prepared
+                    return prepared
         features = []
         for native_id, native_area, finest in data.features:
             if area is not None and native_area != area:
