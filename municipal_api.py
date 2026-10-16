@@ -128,6 +128,14 @@ def register_municipal(app, bundle, *, data_root=None, geometry_root=None):
             raise ValueError('The map viewport is outside the supported range.')
         return value
 
+    def viewport():
+        width = numeric('width', 100, 2000, integer=True)
+        height = numeric('height', 100, 1400, integer=True)
+        if width * height > 2_000_000:
+            raise ValueError('Use a map viewport of at most two million pixels.')
+        return (width, height, numeric('scale', 1, 100_000_000),
+                numeric('tx', -1e9, 1e9), numeric('ty', -1e9, 1e9))
+
     def handled(fn):
         def invoke(*args, **kwargs):
             try:
@@ -176,16 +184,37 @@ def register_municipal(app, bundle, *, data_root=None, geometry_root=None):
     @handled
     def municipal_image():
         country, metric, statistic, area = selectors(('width', 'height', 'scale', 'tx', 'ty'))
-        width = numeric('width', 100, 2000, integer=True)
-        height = numeric('height', 100, 1400, integer=True)
-        if width * height > 2_000_000:
-            raise ValueError('Use a map viewport of at most two million pixels.')
-        scale = numeric('scale', 1, 100_000_000)
-        tx, ty = numeric('tx', -1e9, 1e9), numeric('ty', -1e9, 1e9)
+        width, height, scale, tx, ty = viewport()
         payload = country_values(country, metric, statistic, area)
         values = {r['id']: r['values'][metric]['value'] for r in payload['rows']}
         image = geometry.render_png(country, values, area, width, height, scale, tx, ty,
                                     payload['legend']['maximum'])
+        return Response(image, mimetype='image/png')
+
+    @app.get('/api/municipal/selection.png')
+    @handled
+    def municipal_selection():
+        allowed = {'country', 'municipality', 'area', 'width', 'height', 'scale', 'tx', 'ty'}
+        for key in request.args:
+            if key not in allowed or len(request.args.getlist(key)) != 1:
+                raise ValueError('Use each recognised selection selector once.')
+        country = request.args.get('country')
+        native_id = request.args.get('municipality', '')
+        area = request.args.get('area')
+        if country not in countries:
+            raise ValueError('Select a recognised country or territory.')
+        if not native_id or len(native_id) > 160 or native_id.split('.', 1)[0] != country:
+            raise ValueError('Select a native municipality from the chosen country.')
+        metadata = store.metadata()
+        matching_release(metadata.get('release', {}))
+        entry = next((row for row in metadata['countries'] if row['id'] == country), None)
+        if entry is None:
+            raise MunicipalDataError('Municipal and national country registries differ.')
+        if area is not None and area not in {row['id'] for row in entry['areas']}:
+            raise ValueError('Select a native area from the chosen country.')
+        # Identification and drawing use the private geometry registry. Selecting
+        # an outline needs neither all metric values nor another base-map paint.
+        image = geometry.render_selection_png(country, native_id, area, *viewport())
         return Response(image, mimetype='image/png')
 
     @app.get('/api/municipal/inspect')

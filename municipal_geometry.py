@@ -21,6 +21,8 @@ MAX_LATITUDE = 85.0511287798066
 MISSING_COLOUR = (205, 206, 205, 255)
 ZERO_COLOUR = (242, 241, 232, 255)
 RAMP = ((229, 240, 232), (164, 215, 203), (75, 175, 169), (35, 125, 125), (27, 59, 57))
+SELECTION_ORANGE = (233, 137, 54, 255)
+SELECTION_FILL = (233, 137, 54, 38)
 PAINT_POLICY = {'target_pixels_at_view_centre': 0.35, 'finest_tolerance_degrees': 0.001,
                 'maximum_tolerance_degrees': 0.064, 'quantization': 'powers of two',
                 'cache': 'One projected zoom level and exact native area for the current country',
@@ -58,6 +60,30 @@ def paint_tolerance(scale, ty, height):
     if degrees <= 0.001:
         return 0.001
     return min(0.064, 0.001 * 2 ** math.floor(math.log2(degrees / 0.001)))
+
+
+def validate_viewport(width, height, scale, tx, ty):
+    if (not isinstance(width, int) or not isinstance(height, int) or not 1 <= width <= 2000 or
+            not 1 <= height <= 1400 or width * height > 2_000_000 or
+            any(not math.isfinite(v) for v in (scale, tx, ty)) or not 0 < scale <= 1e8):
+        raise ValueError('Use a bounded map viewport.')
+
+
+def projected_feature(finest, tolerance):
+    """Project one exact native feature without changing any shared cache."""
+    geometry = finest
+    if tolerance > 0.001:
+        from shapely.geometry import MultiPolygon
+        parts = [part.simplify(tolerance, preserve_topology=True) for part in polygon_parts(finest)]
+        candidate = parts[0] if len(parts) == 1 else MultiPolygon(parts)
+        if not candidate.is_empty and candidate.is_valid and polygon_parts(candidate):
+            geometry = candidate
+    polygons = []
+    for polygon in polygon_parts(geometry):
+        rings = [project_ring(ring.coords) for ring in [polygon.exterior, *polygon.interiors]]
+        low, high = rings[0].min(axis=0), rings[0].max(axis=0)
+        polygons.append((rings, (low[0], low[1], high[0], high[1])))
+    return polygons
 
 
 def colour(value, maximum):
@@ -214,6 +240,8 @@ class GeoStore:
         self.root = Path(root).resolve()
         self.lock = threading.RLock()
         self.cache = OrderedDict()
+        self.selection_key = None
+        self.selection_png = None
         self.manifest = None
         try:
             manifest = json.loads((self.root / 'manifest.json').read_text(encoding='utf-8'))
@@ -296,22 +324,7 @@ class GeoStore:
         for native_id, native_area, finest in data.features:
             if area is not None and native_area != area:
                 continue
-            geometry = finest
-            if tolerance > 0.001:
-                # Simplify each island separately, then validate their combined
-                # topology. Whole-multipolygon simplification is costly for
-                # coastal units with thousands of disconnected parts.
-                from shapely.geometry import MultiPolygon
-                parts = [part.simplify(tolerance, preserve_topology=True) for part in polygon_parts(finest)]
-                candidate = parts[0] if len(parts) == 1 else MultiPolygon(parts)
-                if not candidate.is_empty and candidate.is_valid and polygon_parts(candidate):
-                    geometry = candidate
-            polygons = []
-            for polygon in polygon_parts(geometry):
-                rings = [project_ring(ring.coords) for ring in [polygon.exterior, *polygon.interiors]]
-                low, high = rings[0].min(axis=0), rings[0].max(axis=0)
-                polygons.append((rings, (low[0], low[1], high[0], high[1])))
-            features.append((native_id, polygons))
+            features.append((native_id, projected_feature(finest, tolerance)))
         data.paint_key, data.paint_features = key, features
         return features
 
@@ -321,10 +334,7 @@ class GeoStore:
 
     def _render_png(self, country, metricRowsByID, area, width, height, scale, tx, ty, max_value):
         from PIL import Image
-        if (not isinstance(width, int) or not isinstance(height, int) or not 1 <= width <= 2000 or
-                not 1 <= height <= 1400 or width * height > 2_000_000 or
-                any(not math.isfinite(v) for v in (scale, tx, ty)) or not 0 < scale <= 1e8):
-            raise ValueError('Use a bounded map viewport.')
+        validate_viewport(width, height, scale, tx, ty)
         data = self._country(country)
         paint = self._paint_features(data, area, paint_tolerance(scale, ty, height))
         labels, native_ids = self._label_raster(data, paint, width, height, scale, tx, ty)
@@ -378,3 +388,83 @@ class GeoStore:
         array.flags.writeable = False
         data.raster_key, data.raster = key, (array, tuple(native_ids))
         return data.raster
+
+    def render_selection_png(self, country, native_id, area, width, height, scale, tx, ty):
+        """Transparent exact-unit highlight; never rebuild the base map cache."""
+        with self.lock:
+            validate_viewport(width, height, scale, tx, ty)
+            if self.manifest is None:
+                raise FileNotFoundError('Municipal geometry is unavailable.')
+            if country not in self.manifest['countries']:
+                raise KeyError('Unknown municipal reporting unit for this country or area.')
+            key = (country, native_id, area, width, height, scale, tx, ty)
+            if self.selection_key == key and self.selection_png is not None:
+                return self.selection_png
+            # Use the current country's projected feature when its LOD matches.
+            # An overlay requested before a base map reads only one private WKB
+            # row, preserving any other country's base paint/raster cache.
+            data = self.cache.get(country)
+            feature = next((row for row in data.features if row[0] == native_id), None) if data else None
+            if feature is None:
+                from shapely import from_wkb
+                try:
+                    with closing(sqlite3.connect((self.root / 'geometry.sqlite').as_uri() + '?mode=ro', uri=True)) as connection:
+                        row = connection.execute('SELECT area,geom FROM features WHERE country=? AND native_id=?',
+                                                 (country, native_id)).fetchone()
+                    feature = (native_id, row[0], from_wkb(row[1])) if row else None
+                except Exception as exc:
+                    raise FileNotFoundError('Municipal geometry is unavailable.') from exc
+            if feature is None or (area is not None and feature[1] != area):
+                raise KeyError('Unknown municipal reporting unit for this country or area.')
+            tolerance = paint_tolerance(scale, ty, height)
+            polygons = None
+            if data and data.paint_key and data.paint_key[1] == tolerance and data.paint_features is not None:
+                polygons = next((parts for key_id, parts in data.paint_features if key_id == native_id), None)
+            if polygons is None:
+                polygons = projected_feature(feature[2], tolerance)
+            self.selection_key, self.selection_png = None, None
+            image = self._selection_image(polygons, width, height, scale, tx, ty)
+            output = BytesIO()
+            image.save(output, format='PNG', optimize=False, compress_level=5)
+            self.selection_key, self.selection_png = key, output.getvalue()
+            return self.selection_png
+
+    @staticmethod
+    def _selection_image(polygons, width, height, scale, tx, ty):
+        from PIL import Image, ImageDraw
+        image = Image.new('RGBA', (width, height))
+        drawing = ImageDraw.Draw(image)
+        period = 2 * math.pi * scale
+
+        def copies():
+            for rings, (west, north, east, south) in polygons:
+                west, east = west * scale + tx, east * scale + tx
+                north, south = north * scale + ty, south * scale + ty
+                centre = round((width / 2 - (west + east) / 2) / period)
+                for copy in (centre - 1, centre, centre + 1):
+                    shift = copy * period
+                    bounds = (max(0, math.floor(west + shift - 5)), max(0, math.floor(north - 5)),
+                              min(width, math.ceil(east + shift + 5)), min(height, math.ceil(south + 5)))
+                    if bounds[0] < bounds[2] and bounds[1] < bounds[3]:
+                        yield rings, shift, bounds
+
+        for rings, shift, (left, top, right, bottom) in copies():
+            if len(rings) == 1:
+                drawing.polygon((rings[0] * scale + [tx + shift, ty]).ravel().tolist(), fill=SELECTION_FILL)
+                continue
+            mask = Image.new('L', (right - left, bottom - top))
+            mask_drawing = ImageDraw.Draw(mask)
+            transformed = [(ring * scale + [tx + shift - left, ty - top]).ravel().tolist() for ring in rings]
+            mask_drawing.polygon(transformed[0], fill=255)
+            for hole in transformed[1:]:
+                mask_drawing.polygon(hole, fill=0)
+            image.paste(SELECTION_FILL, (left, top, right, bottom), mask)
+        drawing = ImageDraw.Draw(image)
+        # Draw all halos before orange strokes, so nearby islands cannot cover
+        # another part's orange boundary with a later white halo.
+        for stroke, stroke_width in (((255, 255, 255, 255), 7), (SELECTION_ORANGE, 3)):
+            for rings, shift, _ in copies():
+                for ring in rings:
+                    drawing.line((ring * scale + [tx + shift, ty]).ravel().tolist(),
+                                 fill=stroke, width=stroke_width)
+        return image

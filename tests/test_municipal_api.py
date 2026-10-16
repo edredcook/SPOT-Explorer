@@ -105,6 +105,34 @@ class MunicipalAPITests(unittest.TestCase):
         self.assertEqual(self.client.get('/static/.runtime/municipal/geometry.sqlite').status_code, 404)
         self.assertEqual(self.client.get('/api/municipal/inspect?lon=181&lat=0').status_code, 400)
 
+    def test_selection_png_uses_exact_native_scope_without_loading_metric_values(self):
+        geometry = self.app.extensions['municipal_geometry']
+        store = self.app.extensions['municipal_store']
+        path = ('/api/municipal/selection.png?country=BRA&municipality=BRA.1.1_1&area=Acre'
+                '&width=800&height=500&scale=150&tx=400&ty=250')
+        with patch.object(store, 'country', side_effect=AssertionError('Selection reloaded numeric data')):
+            with patch.object(geometry, 'render_selection_png', return_value=b'selected-png') as render:
+                response = self.client.get(path)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.mimetype, 'image/png')
+                self.assertEqual(response.data, b'selected-png')
+                render.assert_called_once_with('BRA', 'BRA.1.1_1', 'Acre', 800, 500, 150, 400, 250)
+        with patch.object(geometry, 'render_selection_png', side_effect=KeyError('Unknown native municipality')):
+            self.assertEqual(self.client.get(path).status_code, 400)
+        with patch.object(geometry, 'render_selection_png', side_effect=FileNotFoundError()):
+            self.assertEqual(self.client.get(path).status_code, 503)
+
+    def test_selection_rejects_wrong_country_area_duplicate_and_unbounded_queries(self):
+        base = ('/api/municipal/selection.png?country=ABW&municipality=ABW'
+                '&width=800&height=500&scale=150&tx=400&ty=250')
+        bad = [base.replace('municipality=ABW', 'municipality=BRA.1.1_1'),
+               base.replace('municipality=ABW', 'municipality='), base + '&municipality=ABW',
+               base + '&metric=plas_em', base + '&statistic=Mean', base + '&area=Not-a-native-area',
+               base.replace('scale=150', 'scale=nan'), base.replace('tx=400', 'tx=inf'),
+               base.replace('width=800&height=500', 'width=2000&height=1400')]
+        for path in bad:
+            self.assertEqual(self.client.get(path).status_code, 400, path)
+
     def test_different_municipal_release_cannot_be_mixed_with_national(self):
         store = self.app.extensions['municipal_store']
         payload = store.country('ABW', ['plas_em'])

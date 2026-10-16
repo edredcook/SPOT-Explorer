@@ -22,7 +22,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from municipal_geometry import (GeoStore, MISSING_COLOUR, ZERO_COLOUR, colour,
                                  circular_bounds, paint_tolerance, palette_for,
-                                 project, project_ring)
+                                 project, project_ring, SELECTION_FILL, SELECTION_ORANGE)
 from scripts.prepare_municipal_geometry import (cache_path, copy_ready, digest_file,
                                                prepare, validated_ready)
 
@@ -224,6 +224,58 @@ class MunicipalGeometry(unittest.TestCase):
         self.assertEqual(pixel(0, -15), colour(10, 10))
         self.assertEqual(pixel(-5, -15), colour(5, 10))
         self.assertEqual(pixel(0, -5)[3], 0)
+
+    def test_selection_overlay_has_distinct_border_fill_and_transparent_hole(self):
+        image = Image.open(BytesIO(self.store.render_selection_png('TST', 'TST.5_1', 'South',
+                                                                  400, 400, 400, 200, 200)))
+        def pixel(lon, lat):
+            x, y = project(lon, lat, 400, 200, 200)
+            return image.getpixel((round(x), round(y)))
+        self.assertEqual(pixel(0, -15)[3], 0)
+        self.assertEqual(pixel(0, 0)[3], 0)
+        self.assertEqual(pixel(-5, -15), SELECTION_FILL)
+        self.assertEqual(pixel(-10, -15), SELECTION_ORANGE)
+        x, y = project(-10, -15, 400, 200, 200)
+        self.assertEqual(image.getpixel((round(x) - 2, round(y))), (255, 255, 255, 255))
+        self.assertEqual(self.store.inspect('TST', -5, -15), 'TST.5_1')
+        self.assertEqual(list(self.store.cache), ['TST'])
+
+    def test_selection_reuses_matching_projection_and_never_mutates_base_cache(self):
+        values = {key: 1 for key in self.registry}
+        base = self.store.render_png('TST', values, None, 400, 400, 400, 200, 200, 1)
+        data = self.store._country('TST')
+        paint, raster, paint_key, raster_key = data.paint_features, data.raster, data.paint_key, data.raster_key
+        with patch('municipal_geometry.projected_feature', side_effect=AssertionError('No feature rebuild expected')):
+            first = self.store.render_selection_png('TST', 'TST.1_1', 'West', 400, 400, 400, 200, 200)
+            with patch.object(self.store, '_selection_image', side_effect=AssertionError('Cached overlay expected')):
+                self.assertIs(first, self.store.render_selection_png('TST', 'TST.1_1', 'West', 400, 400, 400, 200, 200))
+        self.assertIs(data.paint_features, paint)
+        self.assertIs(data.raster, raster)
+        self.assertEqual((data.paint_key, data.raster_key), (paint_key, raster_key))
+        self.assertEqual(base, self.store.render_png('TST', values, None, 400, 400, 400, 200, 200, 1))
+        # Different area or country cannot reuse an earlier valid selection.
+        for country, native_id, area in [('TST', 'TST.1_1', 'East'), ('DAT', 'TST.1_1', None),
+                                          ('TST', 'Missing ID', None), ('Missing country', 'TST.1_1', None)]:
+            with self.assertRaises(KeyError):
+                self.store.render_selection_png(country, native_id, area, 400, 400, 400, 200, 200)
+        self.store.render_selection_png('DAT', 'DAT.1_1', 'Islands', 400, 200, 1000, 200 - 1000 * math.pi, 100)
+        self.assertEqual(list(self.store.cache), ['TST'])
+        self.assertIs(self.store.cache['TST'], data)
+        self.assertIs(data.raster, raster)
+
+    def test_selection_before_base_reads_only_one_unit_and_handles_dateline(self):
+        self.assertEqual(list(self.store.cache), [])
+        image = Image.open(BytesIO(self.store.render_selection_png('DAT', 'DAT.1_1', 'Islands',
+                                                                  400, 200, 1000, 200 - 1000 * math.pi, 100)))
+        self.assertEqual(list(self.store.cache), [])
+        self.assertEqual(image.getpixel((200, 100)), SELECTION_FILL)
+        key = self.store.selection_key
+        self.store.render_selection_png('DAT', 'DAT.1_1', 'Islands', 400, 200, 1000, 210 - 1000 * math.pi, 100)
+        self.assertNotEqual(self.store.selection_key, key)
+        with self.assertRaises(ValueError):
+            self.store.render_selection_png('DAT', 'DAT.1_1', None, 2000, 1400, 1, 0, 0)
+        with self.assertRaises(FileNotFoundError):
+            GeoStore(self.base / 'absent').render_selection_png('DAT', 'DAT.1_1', None, 400, 200, 1000, 200, 100)
 
 
 if __name__ == '__main__':

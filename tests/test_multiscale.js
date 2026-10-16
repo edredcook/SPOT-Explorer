@@ -166,7 +166,7 @@ test('identical queued, pending and displayed raster frames avoid duplicate requ
 });
 
 test('closed municipal panels defer DOM/CSV work, reuse names across metrics and keep full-scope downloads',async()=>{
-  const elements=new Map(),requests=[],blobs=[];
+  const elements=new Map(),requests=[],blobs=[],selectedCountries=[];
   class Element{
     constructor(id='',kind='node'){this.id=id;this.kind=kind;this.children=[];this.style={};this.listeners={};this.hidden=false;this.open=false;this.value='';this.textContent='';this.replacements=0;this.classList={toggle(){}};}
     set innerHTML(value){this.html=value;for(const match of value.matchAll(/id="([^"]+)"/g))get(match[1]);}
@@ -177,7 +177,7 @@ test('closed municipal panels defer DOM/CSV work, reuse names across metrics and
     removeAttribute(name){delete this[name];}
     setAttribute(name,value){this[name]=value;}
     querySelector(selector){if(selector==='.municipal-find')return find;if(selector==='thead tr')return head;if(selector==='p')return note;return this.children.find(child=>'.'+child.className===selector)||null;}
-    querySelectorAll(){return [];}
+    querySelectorAll(selector){if(selector!=='[data-municipal-id]')return [];this.buttons=[...this.innerHTML.matchAll(/data-municipal-id="([^"]+)"/g)].map(match=>{const button=new Element();button.dataset={municipalId:match[1]};return button;});return this.buttons;}
     closest(selector){return selector==='details'?details:selector==='table'?table:selector==='.map-table-toolbar'?toolbar:null;}
     remove(){}
   }
@@ -189,16 +189,64 @@ test('closed municipal panels defer DOM/CSV work, reuse names across metrics and
     async fetch(url){requests.push(url);if(url==='/api/municipal/meta')return {ok:true,json:async()=>({release:{version:'test',model_year:2020},countries:[{id:'IND',name:'India',geometry_ready:false,areas:[{id:'Area',name:'Area',count:250}]}]})};
       const params=new URL(url,'https://fixture.example').searchParams,metric=params.get('metric'),statistic=params.get('statistic');return {ok:true,json:async()=>({country:{id:'IND',name:'India'},metric:{id:metric,name:metric,unit:'tonnes/year'},area:null,statistic,release:{version:'test',model_year:2020},geometry_ready:false,legend:{minimum:0,maximum:249},rows:rowsFor(metric,statistic)})};}};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../web/multiscale.js'),'utf8'),context);
-  const view=context.window.SPOTMunicipal.create({chart,controls,entities:[{id:'IND'}],onSelect(){}});
+  const view=context.window.SPOTMunicipal.create({chart,controls,entities:[{id:'IND'}],onSelect(country){selectedCountries.push(country);}});
   await view.activate({country:'IND',metric:'plas_em',statistic:'Mean',inScope:true});
   assert.equal(get('municipal-place').replacements,0);assert.equal(get('map-table-body').innerHTML,'');assert.equal(blobs.length,0);
   find.open=true;find.listeners.toggle();assert.equal(get('municipal-place').children.length,251);const optionsBuilt=get('municipal-place').replacements;
   details.open=true;details.listeners.toggle();assert.equal((get('map-table-body').innerHTML.match(/<tr>/g)||[]).length,100);
+  get('map-table-body').buttons[0].listeners.click();assert.match(get('map-selected-name').textContent,/Fixture 0/);assert.deepEqual(selectedCountries,['IND']);
   get('municipal-search').listeners.input({target:{value:'Fixture 249'}});assert.equal(get('municipal-place').children.length,2);const filteredOptions=get('municipal-place').replacements;
+  get('municipal-place').value='IND.249';get('municipal-place').listeners.change();assert.match(get('map-selected-name').textContent,/Fixture 249/);assert.equal(get('map-selected-value').textContent,'249');
   assert.equal((get('map-table-body').innerHTML.match(/<tr>/g)||[]).length,1);
   get('map-download').listeners.click({preventDefault(){throw Error('Valid download prevented');}});assert.equal(blobs.length,1);assert.equal((await blobs[0].text()).trimEnd().split('\r\n').length,251);
   await view.activate({country:'IND',metric:'pwg',statistic:'Mean',inScope:true});assert.equal(get('municipal-place').replacements,filteredOptions);assert.equal(blobs.length,1);
   const beforeStatistic=requests.length;await view.activate({country:'IND',metric:'pwg',statistic:'Median',inScope:true});assert.equal(requests.length,beforeStatistic);assert.equal(get('municipal-place').replacements,filteredOptions);assert.ok(filteredOptions>optionsBuilt);
+  assert.match(get('map-selected-name').textContent,/Fixture 249/);assert.equal(get('map-selected-value').textContent,'124.5');
   get('map-download').listeners.click({preventDefault(){throw Error('Valid download prevented');}});assert.equal(blobs.length,2);const csv=await blobs[1].text();assert.match(csv,/"pwg","Median"/);assert.equal(csv.trimEnd().split('\r\n').length,251);
   view.deactivate();
+});
+
+test('selection frames contain only exact municipality scope and the shared bounded camera',()=>{
+  const view={base:{scale:400,tx:-100,ty:150},transform:{k:3,x:20,y:-10},width:3840,height:2160},scope={country:'BRA',municipality:'BRA.1.1_1',area:'Acre',metric:'plas_em',statistic:'Median'};
+  const frame=municipal.selectionFrame(scope,view),params=new URL(frame.key,'https://fixture.example').searchParams,raster=municipal.rasterViewport(view.width,view.height,municipal.camera(view.base,view.transform));
+  assert.equal(params.get('country'),'BRA');assert.equal(params.get('municipality'),'BRA.1.1_1');assert.equal(params.get('area'),'Acre');assert.equal(params.has('metric'),false);assert.equal(params.has('statistic'),false);
+  for(const key of['width','height','scale','tx','ty'])assert.equal(Number(params.get(key)),raster[key]);
+  assert.equal(municipal.selectionFrame({...scope,metric:'pwg',statistic:'Mean'},view).key,frame.key);assert.equal(municipal.selectionFrame({...scope,municipality:null},view),null);
+});
+
+test('selection overlay reuses colour changes, debounces pan/zoom, and disposes superseded images',async()=>{
+  let current=municipal.selectionFrame({country:'IND',municipality:'IND.1_1'},{base:{scale:100,tx:0,ty:0},transform:{k:1,x:0,y:0},width:500,height:300});
+  const requests=[],renders=[],disposed=[],timers=new Map();let timerID=0;
+  const overlay=municipal.createSelectionOverlay({getFrame:()=>current,schedule(fn,delay){assert.equal(delay,180);timers.set(++timerID,fn);return timerID;},cancel(id){timers.delete(id);},loadImage(frame,signal){return new Promise(resolve=>requests.push({frame,signal,resolve}));},onRender(asset,snapshot){renders.push({asset,snapshot});}});
+  const asset=id=>({id,dispose(){disposed.push(id);}});
+  const first=overlay.queue(true);assert.equal(requests.length,1);requests[0].resolve(asset('first'));await first;assert.equal(renders.length,1);
+  overlay.queue(true);assert.equal(requests.length,1);assert.equal(renders.at(-1).asset.id,'first');
+  current={...current,key:current.key+'&camera=2',transform:{k:2,x:-20,y:-5}};overlay.queue();assert.equal(requests.length,1);assert.equal(timers.size,1);
+  current={...current,key:current.key+'&camera=3',transform:{k:3,x:-40,y:-10}};overlay.queue();assert.equal(timers.size,1);assert.equal(disposed.length,0);
+  const fn=[...timers.values()][0];timers.clear();fn();assert.equal(requests.length,2);assert.equal(renders.at(-1).snapshot.transform.k,1);
+  requests[1].resolve(asset('zoomed'));await new Promise(resolve=>setImmediate(resolve));assert.equal(renders.at(-1).snapshot.transform.k,3);assert.deepEqual(disposed,['first']);
+  overlay.clear();assert.deepEqual(disposed,['first','zoomed']);assert.equal(requests[1].signal.aborted,true);
+});
+
+test('selection overlay rejects late unit/country/area responses and clears on deactivation',async()=>{
+  const view={base:{scale:100,tx:0,ty:0},transform:{k:1,x:0,y:0},width:500,height:300};let current=municipal.selectionFrame({country:'IND',municipality:'IND.1_1'},view);
+  const requests=[],renders=[],disposed=[];let errors=0;
+  const overlay=municipal.createSelectionOverlay({getFrame:()=>current,loadImage(frame,signal){return new Promise((resolve,reject)=>requests.push({frame,signal,resolve,reject}));},onRender(asset){renders.push(asset.id);},onError(){errors++;}}),asset=id=>({id,dispose(){disposed.push(id);}});
+  const a=overlay.queue(true);current=municipal.selectionFrame({country:'BRA',municipality:'BRA.1_1',area:'Acre'},view);const b=overlay.queue(true);assert.equal(requests[0].signal.aborted,true);
+  requests[0].resolve(asset('late India'));await a;assert.deepEqual(renders,[]);assert.deepEqual(disposed,['late India']);
+  requests[1].resolve(asset('Brazil'));await b;assert.deepEqual(renders,['Brazil']);
+  current=municipal.selectionFrame({country:'BRA',municipality:'BRA.2_1',area:'Other'},view);const c=overlay.queue(true);assert.deepEqual(disposed,['late India','Brazil']);
+  current=null;overlay.clear();requests[2].resolve(asset('late area'));await c;assert.deepEqual(renders,['Brazil']);assert.equal(errors,0);assert.deepEqual(disposed,['late India','Brazil','late area']);
+});
+
+test('selection highlight errors can retry without changing selected numeric data',async()=>{
+  const values={mean:0,median:null},current=municipal.selectionFrame({country:'IND',municipality:'IND.1_1'},{base:{scale:100,tx:0,ty:0},transform:{k:1,x:0,y:0},width:500,height:300});let attempts=0,errors=0,rendered=0;
+  const overlay=municipal.createSelectionOverlay({getFrame:()=>current,async loadImage(){if(++attempts===1)throw Error('fixture failure');return {dispose(){}};},onRender(){rendered++;},onError(){errors++;}});
+  await overlay.queue(true);assert.equal(errors,1);assert.equal(rendered,0);assert.deepEqual(values,{mean:0,median:null});await overlay.queue(true);assert.equal(attempts,2);assert.equal(rendered,1);overlay.clear();
+});
+
+test('selection overlay temporary transform also stays aligned when fit/world changes the base projection',()=>{
+  const country=municipal.fitMercator([68,6,98,36],970,480),world=municipal.fitMercator([-180,-80,180,85],970,480),old=municipal.camera(country,{k:3,x:-100,y:20}),current=municipal.camera(world,{k:2,x:-30,y:-10});
+  const transform=municipal.imageTransform({k:current.scale,x:current.tx,y:current.ty},{k:old.scale,x:old.tx,y:old.ty});
+  for(const [lon,lat]of[[78,22],[82,30]]){const x=lon*Math.PI/180,y=-Math.log(Math.tan(Math.PI/4+lat*Math.PI/360));assert.ok(Math.abs((x*old.scale+old.tx)*transform.k+transform.x-(x*current.scale+current.tx))<1e-9);assert.ok(Math.abs((y*old.scale+old.ty)*transform.k+transform.y-(y*current.scale+current.ty))<1e-9);}
 });

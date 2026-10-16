@@ -3,4 +3,6 @@
 @media(max-width:700px){#map-municipal-controls{gap:8px}.municipal-note{font-size:9px}.municipal-pages{flex-basis:100%;margin:5px 0 0}.map-table-toolbar{flex-wrap:wrap}#map-filter-controls>.control{margin-top:8px}}
 .map-is-municipal .map-missing-swatch{background:#CDCECD}
 .municipal-basemap{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;overflow:hidden}.municipal-find>summary{cursor:pointer;font-size:11px;font-weight:600}.municipal-find>.control{margin-top:10px}.municipal-find .control{display:flex;flex-direction:column;gap:6px}
-.municipal-paint{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.municipal-paint{position:absolute;inset:0;pointer-events:none;overflow:hidden;z-index:0;isolation:isolate}
+.municipal-image{z-index:1}.municipal-selection-image{z-index:2}
+.municipal-input{z-index:1}
