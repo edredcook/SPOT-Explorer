@@ -2,20 +2,87 @@
 from __future__ import annotations
 
 import copy
+import io
+import json
 import os
 from pathlib import Path
 import sys
 import unittest
 from unittest.mock import patch
+from urllib.error import HTTPError
 import uuid
 
 from flask import Flask
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from spot_auth import (AuthError, NAMESPACE, SpotAccounts, SupabaseProvider,
+from spot_auth import (AuthError, MAX_ERROR_BODY, NAMESPACE, SpotAccounts, SupabaseProvider,
                        account_state, register_auth)
 
 PASSWORD = 'a sufficiently long password'
+
+
+class ProviderErrorMessages(unittest.TestCase):
+    """Real HTTPError handling with bounded fake bodies; no provider requests."""
+
+    generic = 'The account request could not be completed. Check the details or request a new invitation.'
+    credentials = 'The email or password was not recognised. Use the password set for your SPOT user, which may differ from your Supabase dashboard password.'
+    unconfirmed = 'Your email has not been confirmed. Open your SPOT invitation link to confirm it, or ask the SPOT owner for a new invitation.'
+
+    def request_error(self, raw, *, path='/token?grant_type=password', method='POST', admin=False, status=400):
+        provider = SupabaseProvider('https://project.supabase.co', 'public', 'private')
+        stream = io.BytesIO(raw)
+        error = HTTPError(provider.url + '/auth/v1' + path, status, 'Provider error', {}, stream)
+        with patch.object(provider.opener, 'open', side_effect=error):
+            with self.assertRaises(AuthError) as caught:
+                provider.call(method, path, {'email': 'private@example.org', 'password': PASSWORD}, admin=admin)
+        self.assertTrue(stream.closed)
+        return caught.exception
+
+    def test_password_grant_known_codes_use_fixed_safe_messages(self):
+        for field in ('code', 'error_code'):
+            for code, expected in (('invalid_credentials', self.credentials), ('email_not_confirmed', self.unconfirmed)):
+                with self.subTest(field=field, code=code):
+                    error = self.request_error(json.dumps({field: code, 'message': 'private@example.org ' + PASSWORD}).encode())
+                    self.assertEqual(str(error), expected)
+                    self.assertEqual(error.status, 401)
+                    self.assertIsNone(error.__cause__)
+
+    def test_unrelated_operations_codes_and_statuses_remain_generic(self):
+        raw = b'{"code":"invalid_credentials","message":"private response"}'
+        cases = [
+            {'path': '/settings', 'method': 'GET'},
+            {'path': '/token?grant_type=refresh_token'},
+            {'path': '/admin/users', 'admin': True},
+            {'admin': True},
+            {'method': 'GET'},
+            {'status': 429},
+            {'status': 500},
+        ]
+        for options in cases:
+            with self.subTest(options=options):
+                error = self.request_error(raw, **options)
+                self.assertEqual(str(error), self.generic)
+                self.assertEqual(error.status, 429 if options.get('status') == 429 else 503 if options.get('status') == 500 else 401)
+        for body in ({'code': 'unexpected', 'message': 'Invalid login credentials'},
+                     {'error_code': 'unexpected', 'code': 'invalid_credentials'},
+                     {'code': ['invalid_credentials']}):
+            with self.subTest(body=body):
+                self.assertEqual(str(self.request_error(json.dumps(body).encode())), self.generic)
+
+    def test_malformed_and_oversized_error_bodies_are_safe_and_bounded(self):
+        oversized = b'{"code":"invalid_credentials","padding":"' + b'x' * MAX_ERROR_BODY + b'"}'
+        for raw in (b'', b'not json', b'\xff', b'[]', b'null', b'"invalid_credentials"',
+                    b'[' * 2000 + b']' * 2000, oversized):
+            with self.subTest(body_size=len(raw)):
+                self.assertEqual(str(self.request_error(raw)), self.generic)
+        provider = SupabaseProvider('https://project.supabase.co', 'public', 'private')
+        stream = io.BytesIO(oversized)
+        error = HTTPError(provider.url, 400, 'Provider error', {}, stream)
+        with patch.object(stream, 'read', wraps=stream.read) as read:
+            with patch.object(provider.opener, 'open', side_effect=error):
+                with self.assertRaises(AuthError):
+                    provider.call('POST', '/token?grant_type=password', {})
+            read.assert_called_once_with(MAX_ERROR_BODY + 1)
 
 
 class FakeProvider(SupabaseProvider):

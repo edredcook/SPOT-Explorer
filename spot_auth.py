@@ -30,6 +30,11 @@ NAMESPACE = 'spot_explorer'
 SESSION_SECONDS = 8 * 3600
 SETUP_SECONDS = 15 * 60
 MAX_BODY = 2 * 1024 * 1024
+MAX_ERROR_BODY = 8 * 1024
+PASSWORD_GRANT_ERRORS = {
+    'invalid_credentials': 'The email or password was not recognised. Use the password set for your SPOT user, which may differ from your Supabase dashboard password.',
+    'email_not_confirmed': 'Your email has not been confirmed. Open your SPOT invitation link to confirm it, or ask the SPOT owner for a new invitation.',
+}
 WEB = Path(__file__).resolve().parent / 'web'
 
 
@@ -97,7 +102,20 @@ class SupabaseProvider:
             return value
         except HTTPError as exc:
             status = 429 if exc.code == 429 else 401 if exc.code in {400, 401, 403, 404, 422} else 503
-            raise AuthError('The account request could not be completed. Check the details or request a new invitation.', status) from None
+            message = 'The account request could not be completed. Check the details or request a new invitation.'
+            with exc:
+                if not admin and method == 'POST' and path == '/token?grant_type=password' and exc.code in {400, 401, 403, 422}:
+                    try:
+                        raw = exc.read(MAX_ERROR_BODY + 1)
+                        value = json.loads(raw) if len(raw) <= MAX_ERROR_BODY else None
+                        if isinstance(value, dict):
+                            # Accept provider codes only; never expose its free-form response.
+                            code = value.get('error_code', value.get('code'))
+                            if isinstance(code, str):
+                                message = PASSWORD_GRANT_ERRORS.get(code, message)
+                    except (OSError, ValueError, TypeError, RecursionError):
+                        pass
+            raise AuthError(message, status) from None
         except (URLError, TimeoutError, OSError, ValueError):
             raise AuthError('The account service is unavailable. Please try again later.') from None
 
