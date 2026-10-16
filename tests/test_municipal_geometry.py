@@ -21,7 +21,8 @@ from shapely.geometry.base import BaseGeometry
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 from municipal_geometry import (GeoStore, MISSING_COLOUR, ZERO_COLOUR, colour,
-                                 circular_bounds, paint_tolerance, project)
+                                 circular_bounds, paint_tolerance, palette_for,
+                                 project, project_ring)
 from scripts.prepare_municipal_geometry import (cache_path, copy_ready, digest_file,
                                                prepare, validated_ready)
 
@@ -167,6 +168,62 @@ class MunicipalGeometry(unittest.TestCase):
         self.assertIs(data.features[0][2], finest)
         self.assertEqual(self.store.inspect('TST', -5, 0), 'TST.1_1')
         self.assertIn('adaptive_paint', self.store.metadata()['simplification'])
+
+    def test_vector_projection_and_palette_match_scalar_reference(self):
+        import numpy as np
+        coordinates = [(0, 0), (-179.9, -90), (190, 90), (32, 45), (14, -61)]
+        expected = [project(x, y, 1, 0, 0) for x, y in coordinates]
+        np.testing.assert_allclose(project_ring(coordinates), expected, atol=1e-14, rtol=1e-14)
+        self.assertFalse(project_ring(coordinates).flags.writeable)
+        samples = [None, False, math.nan, math.inf, -1e-14, 0, {'value': 3}, {'value': None}]
+        samples += [math.expm1(t * math.log(101)) / 100 * 1000 for t in np.linspace(0, 1, 1001)]
+        ids = [str(index) for index in range(len(samples))]
+        values = dict(zip(ids, samples))
+        actual = palette_for(ids, values, 1000)
+        self.assertEqual(tuple(actual[0]), (0, 0, 0, 0))
+        self.assertEqual([tuple(row) for row in actual[1:]], [colour(value, 1000) for value in samples])
+
+    def test_raster_reuses_geometry_across_values_but_invalidates_viewport(self):
+        values = {key: 1 for key in self.registry}
+        first = self.store.render_png('TST', values, None, 400, 400, 400, 200, 200, 1)
+        data = self.store._country('TST')
+        raster = data.raster
+        self.assertFalse(raster[0].flags.writeable)
+        self.assertLessEqual(raster[0].nbytes, 400 * 400 * 4)
+        values['TST.1_1'] = None
+        changed = self.store.render_png('TST', values, None, 400, 400, 400, 200, 200, 1)
+        self.assertIs(data.raster, raster)
+        self.assertNotEqual(first, changed)
+        image = Image.open(BytesIO(changed))
+        x, y = project(-5, 0, 400, 200, 200)
+        self.assertEqual(image.getpixel((round(x), round(y))), MISSING_COLOUR)
+        self.store.render_png('TST', values, None, 400, 400, 400, 210, 200, 1)
+        self.assertIsNot(data.raster, raster)
+        self.store.render_png('TST', values, 'East', 400, 400, 400, 210, 200, 1)
+        self.assertEqual(set(data.raster[1]), {'TST.2_1', 'TST.4_1'})
+        self.store.render_png('DAT', values, None, 400, 400, 400, 210, 200, 1)
+        self.assertEqual(list(self.store.cache), ['DAT'])
+
+    def test_label_raster_preserves_underlying_units_in_holes_and_overlap_order(self):
+        # Synthetic overlap: a lower unit stays visible inside a later unit's
+        # hole, while the later outer fill replaces it everywhere else.
+        native_id = 'TST.0_1'
+        lower = box(-8, -18, 8, -12)
+        self.registry[native_id] = {'id': native_id, 'country_id': 'TST', 'country': 'Synthetic TST', 'name_1': 'South'}
+        with closing(sqlite3.connect(self.source)) as connection:
+            header = b'GP\x00\x01' + struct.pack('<i', 4326)
+            connection.execute('INSERT INTO synthetic VALUES(?,?)', (native_id, header + to_wkb(lower)))
+            connection.commit()
+        prepare(self.source, self.registry, self.output, tolerance=0, verify_release=False)
+        store = GeoStore(self.output)
+        values = {native_id: 10, 'TST.5_1': 5}
+        image = Image.open(BytesIO(store.render_png('TST', values, 'South', 400, 400, 400, 200, 200, 10)))
+        def pixel(lon, lat):
+            x, y = project(lon, lat, 400, 200, 200)
+            return image.getpixel((round(x), round(y)))
+        self.assertEqual(pixel(0, -15), colour(10, 10))
+        self.assertEqual(pixel(-5, -15), colour(5, 10))
+        self.assertEqual(pixel(0, -5)[3], 0)
 
 
 if __name__ == '__main__':

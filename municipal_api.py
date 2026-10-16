@@ -6,9 +6,12 @@ the full workbook or a global vector layer.
 """
 from __future__ import annotations
 
+from collections import OrderedDict
 import gzip
+from hashlib import sha256
 import math
 from pathlib import Path
+import threading
 
 from flask import Response, jsonify, request
 
@@ -25,6 +28,34 @@ def register_municipal(app, bundle, *, data_root=None, geometry_root=None):
     countries = {row['id']: row for row in bundle['entities']}
     app.extensions['municipal_store'] = store
     app.extensions['municipal_geometry'] = geometry
+    # Published responses are immutable for this worker. Retain a small number
+    # of compressed bodies without keeping several countries' decoded rows.
+    compressed_bodies = OrderedDict()
+    compressed_bytes = 0
+    compression_lock = threading.Lock()
+    compression_limit = 3 * 1024 * 1024
+
+    def gzip_body(raw):
+        nonlocal compressed_bytes
+        key = sha256(raw).digest()
+        with compression_lock:
+            if key in compressed_bodies:
+                compressed_bodies.move_to_end(key)
+                return compressed_bodies[key]
+        # A faster compression level trades a little bandwidth for less work on
+        # the shared CPU. The decompressed JSON bytes remain exactly the same.
+        body = gzip.compress(raw, compresslevel=1, mtime=0)
+        with compression_lock:
+            if key in compressed_bodies:
+                return compressed_bodies[key]
+            if len(body) <= compression_limit:
+                while compressed_bodies and (len(compressed_bodies) >= 12 or
+                                               compressed_bytes + len(body) > compression_limit):
+                    _, expired = compressed_bodies.popitem(last=False)
+                    compressed_bytes -= len(expired)
+                compressed_bodies[key] = body
+                compressed_bytes += len(body)
+        return body
 
     def error(message, status=400):
         return jsonify(error={'code': 'municipal_unavailable' if status == 503 else 'invalid_query',
@@ -53,7 +84,7 @@ def register_municipal(app, bundle, *, data_root=None, geometry_root=None):
         response = jsonify(payload)
         response.vary.add('Accept-Encoding')
         if request.accept_encodings['gzip'] > 0 and len(response.get_data()) > 1024:
-            response.set_data(gzip.compress(response.get_data(), compresslevel=5, mtime=0))
+            response.set_data(gzip_body(response.get_data()))
             response.headers['Content-Encoding'] = 'gzip'
         return response
 

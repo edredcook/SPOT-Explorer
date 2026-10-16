@@ -1,5 +1,6 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path');
+const vm=require('node:vm');
 const map=require('../web/map.js'),municipal=require('../web/multiscale.js'),d3=require('../web/vendor/d3.v7.9.0.min.js');
 const data=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/results.json'),'utf8'));
 const geometry=JSON.parse(fs.readFileSync(path.join(__dirname,'../web/assets/world_boundaries.geojson'),'utf8'));
@@ -142,4 +143,62 @@ test('municipal display statuses are readable while CSV keeps native codes',()=>
   assert.equal(municipal.modelStatus('modelled'),'Modelled');assert.equal(municipal.modelStatus('no_modelled_population'),'No modelled population');assert.equal(municipal.modelStatus(null),'Unavailable');
   const csv=municipal.municipalCSV([{id:'A',name:'A',status:'no_modelled_population',values:{plas_em:{mean:null,median:null,low:null,high:null}}}],{country:'IND',metric:'plas_em',statistic:'Mean'});
   assert.match(csv,/"no_modelled_population"/);assert.doesNotMatch(csv,/No modelled population/);
+});
+
+test('cached statistic switches copy native summaries exactly and update their legend without mutation',()=>{
+  const payload={country:{id:'IND'},metric:{id:'plas_em'},statistic:'Mean',legend:{minimum:-1e-12,maximum:10,scale:'log1p'},rows:[
+    {id:'A',name:'A',values:{plas_em:{value:10,mean:10,median:3,low:0,high:20}}},
+    {id:'B',name:'B',values:{plas_em:{value:-1e-12,mean:-1e-12,median:0,low:-1e-12,high:1}}},
+    {id:'C',name:'C',values:{plas_em:{value:null,mean:null,median:null,low:null,high:null}}}]};
+  const before=JSON.stringify(payload),median=municipal.selectStatistic(payload,'Median');
+  assert.deepEqual(median.rows.map(row=>row.values.plas_em.value),[3,0,null]);assert.equal(median.legend.minimum,0);assert.equal(median.legend.maximum,3);assert.equal(median.legend.scale,'log1p');
+  assert.equal(median.rows[0].values.plas_em.mean,10);assert.equal(median.rows[0].values.plas_em.high,20);assert.equal(JSON.stringify(payload),before);
+  assert.deepEqual(municipal.selectStatistic(median,'Mean'),payload);assert.equal(municipal.selectStatistic(payload,'Mean'),payload);
+});
+
+test('identical queued, pending and displayed raster frames avoid duplicate requests without suppressing retries',()=>{
+  assert.equal(municipal.imageRequestAction('frame',{queued:'frame'}),'queued');
+  assert.equal(municipal.imageRequestAction('frame',{pending:'frame',pendingAborted:false}),'pending');
+  assert.equal(municipal.imageRequestAction('frame',{pending:'frame',pendingAborted:true}),'fetch');
+  assert.equal(municipal.imageRequestAction('frame',{completed:'frame',hasImage:true}),'reuse');
+  assert.equal(municipal.imageRequestAction('frame',{completed:'frame',hasImage:false}),'fetch');
+  assert.equal(municipal.imageRequestAction('new',{completed:'frame',hasImage:true}),'fetch');
+});
+
+test('closed municipal panels defer DOM/CSV work, reuse names across metrics and keep full-scope downloads',async()=>{
+  const elements=new Map(),requests=[],blobs=[];
+  class Element{
+    constructor(id='',kind='node'){this.id=id;this.kind=kind;this.children=[];this.style={};this.listeners={};this.hidden=false;this.open=false;this.value='';this.textContent='';this.replacements=0;this.classList={toggle(){}};}
+    set innerHTML(value){this.html=value;for(const match of value.matchAll(/id="([^"]+)"/g))get(match[1]);}
+    get innerHTML(){return this.html||'';}
+    append(...nodes){this.children.push(...nodes);}
+    replaceChildren(...nodes){this.replacements++;this.children=nodes.flatMap(node=>node.kind==='fragment'?node.children:[node]);}
+    addEventListener(type,fn){this.listeners[type]=fn;}
+    removeAttribute(name){delete this[name];}
+    setAttribute(name,value){this[name]=value;}
+    querySelector(selector){if(selector==='.municipal-find')return find;if(selector==='thead tr')return head;if(selector==='p')return note;return this.children.find(child=>'.'+child.className===selector)||null;}
+    querySelectorAll(){return [];}
+    closest(selector){return selector==='details'?details:selector==='table'?table:selector==='.map-table-toolbar'?toolbar:null;}
+    remove(){}
+  }
+  const get=id=>{if(!elements.has(id))elements.set(id,new Element(id));return elements.get(id);};
+  const find=new Element(),details=new Element(),table=new Element(),head=new Element(),toolbar=new Element(),note=new Element(),controls=new Element(),chart=new Element();chart.clientWidth=970;chart.clientHeight=480;
+  const document={getElementById:get,createElement:()=>new Element(),createDocumentFragment:()=>new Element('','fragment'),querySelector:()=>null};
+  const rowsFor=(metric,statistic)=>Array.from({length:250},(_,i)=>({id:'IND.'+i,name:'Fixture '+i,admin_names:['Area'],population:100,status:'modelled',values:{[metric]:{value:statistic==='Mean'?i:i/2,mean:i,median:i/2,low:0,high:i+1}}}));
+  const context={window:{},document,d3,URLSearchParams,AbortController,Blob,Intl,Option:function(label,value){this.textContent=label;this.value=value;},URL:{createObjectURL(blob){blobs.push(blob);return 'blob:fixture-'+blobs.length;},revokeObjectURL(){}},setTimeout,clearTimeout,requestAnimationFrame:()=>0,
+    async fetch(url){requests.push(url);if(url==='/api/municipal/meta')return {ok:true,json:async()=>({release:{version:'test',model_year:2020},countries:[{id:'IND',name:'India',geometry_ready:false,areas:[{id:'Area',name:'Area',count:250}]}]})};
+      const params=new URL(url,'https://fixture.example').searchParams,metric=params.get('metric'),statistic=params.get('statistic');return {ok:true,json:async()=>({country:{id:'IND',name:'India'},metric:{id:metric,name:metric,unit:'tonnes/year'},area:null,statistic,release:{version:'test',model_year:2020},geometry_ready:false,legend:{minimum:0,maximum:249},rows:rowsFor(metric,statistic)})};}};
+  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../web/multiscale.js'),'utf8'),context);
+  const view=context.window.SPOTMunicipal.create({chart,controls,entities:[{id:'IND'}],onSelect(){}});
+  await view.activate({country:'IND',metric:'plas_em',statistic:'Mean',inScope:true});
+  assert.equal(get('municipal-place').replacements,0);assert.equal(get('map-table-body').innerHTML,'');assert.equal(blobs.length,0);
+  find.open=true;find.listeners.toggle();assert.equal(get('municipal-place').children.length,251);const optionsBuilt=get('municipal-place').replacements;
+  details.open=true;details.listeners.toggle();assert.equal((get('map-table-body').innerHTML.match(/<tr>/g)||[]).length,100);
+  get('municipal-search').listeners.input({target:{value:'Fixture 249'}});assert.equal(get('municipal-place').children.length,2);const filteredOptions=get('municipal-place').replacements;
+  assert.equal((get('map-table-body').innerHTML.match(/<tr>/g)||[]).length,1);
+  get('map-download').listeners.click({preventDefault(){throw Error('Valid download prevented');}});assert.equal(blobs.length,1);assert.equal((await blobs[0].text()).trimEnd().split('\r\n').length,251);
+  await view.activate({country:'IND',metric:'pwg',statistic:'Mean',inScope:true});assert.equal(get('municipal-place').replacements,filteredOptions);assert.equal(blobs.length,1);
+  const beforeStatistic=requests.length;await view.activate({country:'IND',metric:'pwg',statistic:'Median',inScope:true});assert.equal(requests.length,beforeStatistic);assert.equal(get('municipal-place').replacements,filteredOptions);assert.ok(filteredOptions>optionsBuilt);
+  get('map-download').listeners.click({preventDefault(){throw Error('Valid download prevented');}});assert.equal(blobs.length,2);const csv=await blobs[1].text();assert.match(csv,/"pwg","Median"/);assert.equal(csv.trimEnd().split('\r\n').length,251);
+  view.deactivate();
 });

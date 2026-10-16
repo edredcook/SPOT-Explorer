@@ -43,6 +43,27 @@ class MunicipalAPITests(unittest.TestCase):
         self.assertEqual(missing['status'], 'no_modelled_population')
         self.assertIn('Accept-Encoding', response.headers['Vary'])
 
+    def test_repeated_compression_is_reused_without_mixing_metric_or_statistic(self):
+        client = create_app().test_client()
+        path = '/api/municipal/values?country=ABW&metric=plas_em&statistic=Mean'
+        expected = client.get(path).data
+        compress = gzip.compress
+        with patch('municipal_api.gzip.compress', wraps=compress) as encode:
+            first = client.get(path, headers={'Accept-Encoding': 'gzip'})
+            repeat = client.get(path, headers={'Accept-Encoding': 'gzip'})
+            self.assertEqual(encode.call_count, 1)
+            self.assertEqual(gzip.decompress(first.data), expected)
+            self.assertEqual(repeat.data, first.data)
+            median = client.get(path.replace('Mean', 'Median'), headers={'Accept-Encoding': 'gzip'})
+            rate = client.get(path.replace('metric=plas_em&', 'metric=plas_em_per_cap&'),
+                              headers={'Accept-Encoding': 'gzip'})
+            self.assertEqual(encode.call_count, 3)
+        self.assertEqual(json.loads(gzip.decompress(median.data))['statistic'], 'Median')
+        self.assertEqual(json.loads(gzip.decompress(rate.data))['metric']['id'], 'plas_em_per_cap')
+        plain = client.get(path, headers={'Accept-Encoding': 'gzip;q=0'})
+        self.assertNotIn('Content-Encoding', plain.headers)
+        self.assertEqual(plain.data, expected)
+
     def test_unknown_and_repeated_scope_selectors_fail(self):
         for query in ('country=XYZ', 'country=IND&country=ABW', 'metric=../x',
                       'statistic=Maximum', 'area=', 'area=Not%20a%20source%20area', 'level=municipal'):

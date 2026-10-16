@@ -24,6 +24,7 @@ RAMP = ((229, 240, 232), (164, 215, 203), (75, 175, 169), (35, 125, 125), (27, 5
 PAINT_POLICY = {'target_pixels_at_view_centre': 0.35, 'finest_tolerance_degrees': 0.001,
                 'maximum_tolerance_degrees': 0.064, 'quantization': 'powers of two',
                 'cache': 'One projected zoom level and exact native area for the current country',
+                'raster_cache': 'One metric-independent viewport label raster, at most two million pixels',
                 'lookup': 'Finest prepared geometry retained for native-ID point identification',
                 'fallback': 'Keep valid finest geometry if display simplification becomes empty or invalid'}
 
@@ -31,6 +32,18 @@ PAINT_POLICY = {'target_pixels_at_view_centre': 0.35, 'finest_tolerance_degrees'
 def project(lon, lat, scale, tx, ty):
     latitude = math.radians(max(-MAX_LATITUDE, min(MAX_LATITUDE, lat)))
     return scale * math.radians(lon) + tx, ty - scale * math.log(math.tan(math.pi / 4 + latitude / 2))
+
+
+def project_ring(coordinates):
+    """Project a whole ring in compiled arrays, with no Python point tuples."""
+    import numpy as np
+    coordinates = np.asarray(coordinates, dtype=float)
+    projected = np.empty((len(coordinates), 2), dtype=float)
+    projected[:, 0] = np.deg2rad(coordinates[:, 0])
+    latitude = np.deg2rad(np.clip(coordinates[:, 1], -MAX_LATITUDE, MAX_LATITUDE))
+    projected[:, 1] = -np.log(np.tan(math.pi / 4 + latitude / 2))
+    projected.flags.writeable = False
+    return projected
 
 
 def paint_tolerance(scale, ty, height):
@@ -149,6 +162,50 @@ class _Country:
     tree: object
     paint_key: object = None
     paint_features: object = None
+    raster_key: object = None
+    raster: object = None
+
+
+def palette_for(native_ids, values, maximum):
+    """Exact source values determine a small colour table, not polygon work.
+
+    NumPy is already a Shapely dependency. Its compiled array operations keep
+    recolouring thousands of reporting units off the Python drawing loop.
+    Index zero is transparent exterior; missing and exact zero stay distinct.
+    """
+    import numpy as np
+    source = []
+    for native_id in native_ids:
+        value = values.get(native_id)
+        value = value.get('value') if isinstance(value, dict) else value
+        source.append(value if isinstance(value, (int, float)) and not isinstance(value, bool) else math.nan)
+    numeric = np.asarray(source, dtype=float)
+    palette = np.zeros((len(native_ids) + 1, 4), dtype=np.uint8)
+    palette[1:] = MISSING_COLOUR
+    valid = np.isfinite(numeric)
+    zero = valid & (numeric == 0)
+    palette[1:][zero] = ZERO_COLOUR
+    selected = np.flatnonzero(valid & ~zero)
+    if not len(selected):
+        return palette
+    fraction = np.log1p(np.maximum(numeric[selected], 0) / maximum * 100) / math.log(101) if maximum and maximum > 0 else np.zeros(len(selected))
+    position = np.clip(fraction, 0, 1) * (len(RAMP) - 1)
+    index = np.minimum(len(RAMP) - 2, position.astype(int))
+    t = (position - index)[:, None]
+    ramp = np.asarray(RAMP, dtype=float)
+    extended = np.vstack((2 * ramp[0] - ramp[1], ramp, 2 * ramp[-1] - ramp[-2]))
+    v0, v1, v2, v3 = (extended[index + offset] for offset in range(4))
+    channels = ((1 - 3*t + 3*t*t - t**3)*v0 + (4 - 6*t*t + 3*t**3)*v1 +
+                (1 + 3*t + 3*t*t - 3*t**3)*v2 + t**3*v3) / 6
+    palette[selected + 1, :3] = np.clip(np.rint(channels), 0, 255).astype(np.uint8)
+    palette[selected + 1, 3] = 255
+    # Resolve rare floating-point half-way values with the scalar reference.
+    # This preserves its rounding at channel boundaries across math libraries.
+    ties = np.any(np.abs(channels - np.floor(channels) - .5) < 1e-10, axis=1)
+    for offset in np.flatnonzero(ties):
+        position = selected[offset]
+        palette[position + 1] = colour(source[position], maximum)
+    return palette
 
 
 class GeoStore:
@@ -234,6 +291,7 @@ class GeoStore:
             return data.paint_features
         # Release the previous projected LOD before constructing its replacement.
         data.paint_key, data.paint_features = None, None
+        data.raster_key, data.raster = None, None
         features = []
         for native_id, native_area, finest in data.features:
             if area is not None and native_area != area:
@@ -250,10 +308,9 @@ class GeoStore:
                     geometry = candidate
             polygons = []
             for polygon in polygon_parts(geometry):
-                rings = [[project(x, y, 1, 0, 0) for x, y, *_ in ring.coords]
-                         for ring in [polygon.exterior, *polygon.interiors]]
-                xs, ys = zip(*rings[0])
-                polygons.append((rings, (min(xs), min(ys), max(xs), max(ys))))
+                rings = [project_ring(ring.coords) for ring in [polygon.exterior, *polygon.interiors]]
+                low, high = rings[0].min(axis=0), rings[0].max(axis=0)
+                polygons.append((rings, (low[0], low[1], high[0], high[1])))
             features.append((native_id, polygons))
         data.paint_key, data.paint_features = key, features
         return features
@@ -263,17 +320,34 @@ class GeoStore:
             return self._render_png(country, metricRowsByID, area, width, height, scale, tx, ty, max_value)
 
     def _render_png(self, country, metricRowsByID, area, width, height, scale, tx, ty, max_value):
-        from PIL import Image, ImageDraw
+        from PIL import Image
         if (not isinstance(width, int) or not isinstance(height, int) or not 1 <= width <= 2000 or
                 not 1 <= height <= 1400 or width * height > 2_000_000 or
                 any(not math.isfinite(v) for v in (scale, tx, ty)) or not 0 < scale <= 1e8):
             raise ValueError('Use a bounded map viewport.')
         data = self._country(country)
         paint = self._paint_features(data, area, paint_tolerance(scale, ty, height))
-        image = Image.new('RGBA', (width, height))
+        labels, native_ids = self._label_raster(data, paint, width, height, scale, tx, ty)
+        palette = palette_for(native_ids, metricRowsByID, max_value)
+        image = Image.fromarray(palette[labels])
+        output = BytesIO()
+        image.save(output, format='PNG', optimize=False, compress_level=5)
+        return output.getvalue()
+
+    def _label_raster(self, data, paint, width, height, scale, tx, ty):
+        """Cache one bounded viewport, independent of metric/statistic values."""
+        import numpy as np
+        from PIL import Image, ImageDraw
+        key = (data.paint_key, width, height, scale, tx, ty)
+        if data.raster_key == key and data.raster is not None:
+            return data.raster
+        data.raster_key, data.raster = None, None
+        labels = Image.new('I', (width, height), 0)
+        drawing = ImageDraw.Draw(labels)
         period = 2 * math.pi * scale
-        for native_id, polygons in paint:
-            fill = colour(metricRowsByID.get(native_id), max_value)
+        native_ids = []
+        for code, (native_id, polygons) in enumerate(paint, 1):
+            native_ids.append(native_id)
             for rings, bounds in polygons:
                 min_x, min_y, max_x, max_y = bounds
                 min_x, max_x = min_x * scale + tx, max_x * scale + tx
@@ -286,15 +360,21 @@ class GeoStore:
                     top, bottom = max(0, math.floor(min_y - 1)), min(height, math.ceil(max_y + 1))
                     if left >= right or top >= bottom:
                         continue
+                    # Most island parts have no holes. Draw these directly to
+                    # avoid thousands of small masks, image allocations/pastes.
+                    if len(rings) == 1:
+                        drawing.polygon((rings[0] * scale + [tx + shift, ty]).ravel().tolist(), fill=code)
+                        continue
                     mask = Image.new('L', (right - left, bottom - top))
-                    drawing = ImageDraw.Draw(mask)
-                    transformed = [[(x * scale + tx + shift - left, y * scale + ty - top) for x, y in ring] for ring in rings]
-                    drawing.polygon(transformed[0], fill=255)
+                    mask_drawing = ImageDraw.Draw(mask)
+                    transformed = [(ring * scale + [tx + shift - left, ty - top]).ravel().tolist() for ring in rings]
+                    mask_drawing.polygon(transformed[0], fill=255)
                     for hole in transformed[1:]:
-                        drawing.polygon(hole, fill=0)
-                    image.paste(fill, (left, top, right, bottom), mask)
-        # Polygon outlines are intentionally omitted at world scale: retaining
-        # the filled area makes small municipalities visible without white wash.
-        output = BytesIO()
-        image.save(output, format='PNG', optimize=False, compress_level=5)
-        return output.getvalue()
+                        mask_drawing.polygon(hole, fill=0)
+                    # Transparent holes retain earlier native units, matching
+                    # the previous renderer's deterministic overlap ordering.
+                    labels.paste(code, (left, top, right, bottom), mask)
+        array = np.asarray(labels, dtype=np.uint16 if len(native_ids) < 65536 else np.uint32)
+        array.flags.writeable = False
+        data.raster_key, data.raster = key, (array, tuple(native_ids))
+        return data.raster

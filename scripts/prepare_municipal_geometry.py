@@ -6,6 +6,8 @@ Examples:
 
 No original source or public asset is modified. A completed manifest is
 published only after exact-ID coverage, database and source checks pass.
+The deployment --download mode also prepares the private per-metric values
+index, so the existing service build command installs both runtime assets.
 """
 from __future__ import annotations
 
@@ -364,6 +366,10 @@ def main():
     parser.add_argument('--tolerance', type=float, default=0.001)
     parser.add_argument('--cache-dir', type=Path, help='Prepared-only cache; defaults beneath XDG_CACHE_HOME for --download.')
     args = parser.parse_args()
+    if args.download and args.registry is None:
+        from scripts.prepare_municipal_values import prepare as prepare_values
+        print('Preparing the private per-metric municipal values index.', flush=True)
+        print(json.dumps(prepare_values(data_root=args.data_root), indent=2), flush=True)
     registry = load_registry(args.registry, args.data_root)
     if len(registry) != 50702:
         parser.error('The released registry must contain exactly 50,702 native IDs.')
