@@ -133,6 +133,37 @@ def create_app(data_path: str | Path | None = None) -> Flask:
         return jsonify(basis=basis, metric=metrics[('outputs', metric)], statistic=statistic,
                        release=bundle['release'], rows=summary_rows(entities, 'outputs', metric, statistic))
 
+    @app.get('/api/atlas')
+    def atlas_values():
+        """Released national outputs for linked maps and cross-country charts.
+
+        The selected central statistic and interval bounds are copied from the
+        release. Mean is also explicit so additive composition charts can use
+        mean masses even when another view displays medians. No national or
+        regional value is derived from displayed polygons or percentages here.
+        """
+        args({'statistic'})
+        statistic = request.args.get('statistic', 'Mean')
+        if statistic not in ('Mean', 'Median'):
+            raise InvalidQuery('Select Mean or Median for the atlas summary.')
+        output_metrics = [definition for (family, _), definition in metrics.items()
+                          if family == 'outputs']
+        rows = []
+        for key, entity in entities.items():
+            released = bundle['national'][key]['outputs']
+            values = {}
+            for definition in output_metrics:
+                metric_id = definition['id']
+                source = released[metric_id]
+                values[metric_id] = {
+                    'value': source.get(statistic), 'low': source.get('5th percentile'),
+                    'median': source.get('Median'), 'high': source.get('95th percentile'),
+                    'mean': source.get('Mean'),
+                }
+            rows.append({**entity, 'values': values})
+        return jsonify(release=bundle['release'], model_year=bundle['release'].get('model_year', 2020),
+                       statistic=statistic, statistics=statistics, metrics=output_metrics, rows=rows)
+
     @app.get('/api/download')
     def download():
         selected, family, metric, statistic = selectors(allow_all=True)

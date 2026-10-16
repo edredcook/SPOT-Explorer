@@ -124,12 +124,12 @@
       state.entity=id;state.profile=profile;profile.entity=profile.entity||entity;
       $('country-name').textContent=profile.entity.name||entity.name;$('country-code').textContent=id;$('country-code').hidden=false;$('country-search').value=entityLabel(entity);
       const pop=profile.entity.population??entity.population,region=profile.entity.region??entity.region;
-      $('country-context').textContent=[region&&region!=='NA'?region:null,numeric(pop)?'Population '+fmt(pop,0):null,'2020 baseline'].filter(Boolean).join(' · ');
+      $('country-context').textContent=[region&&region!=='NA'?region:null,numeric(pop)?'Population '+fmt(pop,0):null,'Mean · 2020'].filter(Boolean).join(' · ');
       document.querySelectorAll('.entity-inline').forEach(n=>n.textContent=profile.entity.name||entity.name);
       document.querySelectorAll('.download-country').forEach(n=>n.textContent=profile.entity.name||entity.name);
       $('country-download').href='/api/download?entities='+encodeURIComponent(id)+'&family=all&metric=all&statistic=all';
       $('snapshot-download').href='/api/snapshot?entity='+encodeURIComponent(id);$('snapshot-download').download='SPOT_'+id+'_2020_snapshot.json';
-      setRelease(profile.release);renderHeadlines();renderFlow();renderSources();setStatus('global-status','');document.body.classList.add('has-data');state.map?.select(id);
+      setRelease(profile.release);renderHeadlines();renderFlow();renderSources();setStatus('global-status','');document.body.classList.add('has-data');state.map?.select(id);state.relationships?.select(id);
       if(updateURL){const u=new URL(location.href);u.searchParams.set('entity',id);history.replaceState(null,'',u);}
       if(!state.compare.includes(id)){state.compare=[id].concat(state.compare).slice(0,6);renderChips();}
       loadComparison();
@@ -166,7 +166,7 @@
       const rows=payload.rows||[];renderComparison(rows,selection,title,unit);
       const dl=new URLSearchParams({entities:selection.entities.join(','),family:'outputs',metric:selection.metric,statistic:'all'});$('compare-download').href='/api/download?'+dl;$('compare-download').title='All six source statistics for the selected countries and metric';
       setStatus('compare-status','');
-    }catch(e){if(e.name==='AbortError')return;setStatus('compare-status',e.message,true);$('comparison-chart').setAttribute('aria-busy','false');}
+    }catch(e){if(revision!==state.compareRevision||e.name==='AbortError')return;setStatus('compare-status',e.message,true);$('comparison-chart').setAttribute('aria-busy','false');}
   }
   function renderComparison(rows,selection,title,unit) {
     state.lastComparison={rows,selection,title,unit};
@@ -196,20 +196,50 @@
     dialog.addEventListener('close',()=>{document.body.style.overflow='';previous?.focus();});
     dialog.addEventListener('click',event=>{if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();}});
   }
+  function refreshVisibleView() {
+    requestAnimationFrame(()=>{
+      if(state.activeTab==='maps')state.map?.resize?.();
+      if(state.activeTab==='relationships')state.relationships?.resize?.();
+      if(state.activeTab==='country'&&state.profile){renderFlow();renderSources();}
+      if(state.activeTab==='compare'&&state.lastComparison){const c=state.lastComparison;renderComparison(c.rows,c.selection,c.title,c.unit);}
+      document.dispatchEvent(new CustomEvent('data-app-tabchange',{detail:{tab:state.activeTab}}));
+    });
+  }
+  function showTab(name,focus) {
+    const allowed=['maps','relationships','country','compare','data'];if(!allowed.includes(name))return;
+    state.activeTab=name;
+    document.querySelectorAll('[data-app-tab]').forEach(button=>{const active=button.dataset.appTab===name;button.setAttribute('aria-selected',String(active));button.tabIndex=active?0:-1;if(active&&focus)button.focus();});
+    allowed.forEach(tab=>{$('tab-'+tab).hidden=tab!==name;});
+    const url=new URL(location.href);url.hash=name;history.replaceState(null,'',url);refreshVisibleView();
+  }
+  function showCountryView(name,focus) {
+    if(!['flow','sources'].includes(name))return;
+    document.querySelectorAll('[data-country-view]').forEach(button=>{const active=button.dataset.countryView===name;button.setAttribute('aria-selected',String(active));button.tabIndex=active?0:-1;if(active&&focus)button.focus();});
+    $('country-view-flow').hidden=name!=='flow';$('country-view-sources').hidden=name!=='sources';refreshVisibleView();
+  }
+  function setupNavigation() {
+    document.querySelectorAll('[data-app-tab]').forEach(button=>button.addEventListener('click',()=>showTab(button.dataset.appTab)));
+    document.querySelectorAll('[data-country-view]').forEach(button=>button.addEventListener('click',()=>showCountryView(button.dataset.countryView)));
+    function keyboardTabs(event,selector,key,show){const buttons=Array.from(document.querySelectorAll(selector)),index=buttons.indexOf(event.target);if(index<0)return;let target;if(event.key==='ArrowRight')target=(index+1)%buttons.length;if(event.key==='ArrowLeft')target=(index-1+buttons.length)%buttons.length;if(event.key==='Home')target=0;if(event.key==='End')target=buttons.length-1;if(target!==undefined){event.preventDefault();show(buttons[target].dataset[key],true);}}
+    $('app-tabs').addEventListener('keydown',event=>keyboardTabs(event,'[data-app-tab]','appTab',showTab));
+    document.querySelector('.country-tabs').addEventListener('keydown',event=>keyboardTabs(event,'[data-country-view]','countryView',showCountryView));
+    const aliases={'world-map':'maps',downloads:'data'};const requested=location.hash.slice(1),target=aliases[requested]||requested;showTab(['maps','relationships','country','compare','data'].includes(target)?target:'maps');
+  }
+  window.SPOTApp={showTab,selectEntity:id=>loadCountry(id,true)};
   async function init() {
     let resizeTimer;window.addEventListener('resize',()=>{clearTimeout(resizeTimer);resizeTimer=setTimeout(()=>{if(state.profile){renderFlow();renderSources();}if(state.lastComparison){const c=state.lastComparison;renderComparison(c.rows,c.selection,c.title,c.unit);}},180);});
-    setupMethods();$('country-form').addEventListener('submit',event=>{event.preventDefault();const found=resolveEntity($('country-search').value);if(found)loadCountry(found.id,true);else setStatus('global-status','Choose a recognised country name or source code from the list.',true);});
+    setupNavigation();setupMethods();$('country-form').addEventListener('submit',event=>{event.preventDefault();const found=resolveEntity($('country-search').value);if(found)loadCountry(found.id,true);else setStatus('global-status','Choose a recognised country name or source code from the list.',true);});
     $('compare-form').addEventListener('submit',event=>{event.preventDefault();loadComparison();});
-    $('compare-metric').addEventListener('change',()=>{updateBasis();setStatus('compare-status','Selection changed. Update the comparison to apply it.');});
-    ['compare-basis','compare-statistic'].forEach(id=>$(id).addEventListener('change',()=>setStatus('compare-status','Selection changed. Update the comparison to apply it.')));
+    $('compare-metric').addEventListener('change',()=>{updateBasis();loadComparison();});
+    ['compare-basis','compare-statistic'].forEach(id=>$(id).addEventListener('change',loadComparison));
     $('add-entity-form').addEventListener('submit',event=>{event.preventDefault();const found=resolveEntity($('compare-search').value);if(!found){setStatus('compare-status','Choose a recognised country name or source code.',true);return;}if(state.compare.includes(found.id)){setStatus('compare-status',found.name+' is already in the comparison.');return;}if(state.compare.length>=6)return;state.compare.push(found.id);$('compare-search').value='';renderChips();loadComparison();});
-    $('flow-table-link').addEventListener('click',()=>{$('flow-table').open=true;});
+    $('flow-table-link').addEventListener('click',event=>{event.preventDefault();$('flow-table').open=true;});
     try{
       state.meta=await api('/api/meta');setRelease(state.meta.release);$('entity-count').textContent=fmt((state.meta.entities||[]).length,0);
       const fragment=document.createDocumentFragment();allEntities().forEach(e=>{const o=document.createElement('option');o.value=entityLabel(e);fragment.append(o);});$('country-options').append(fragment);
       state.compare=state.compare.filter(id=>entityFor(id));if(!state.compare.length)state.compare=(state.meta.entities||[]).slice(0,3).map(e=>e.id);
       const fromURL=new URLSearchParams(location.search).get('entity');state.entity=entityFor(fromURL)?fromURL:entityFor('IND')?'IND':state.meta.entities[0]?.id;
-      renderChips();updateBasis();if(window.SPOTMap&&window.d3){state.map=window.SPOTMap.create({entities:state.meta.entities,onSelect:id=>loadCountry(id,true)});state.map.select(state.entity);}if(state.entity)await loadCountry(state.entity,false);else setStatus('global-status','No reporting entities were included in this data release.',true);
+      renderChips();updateBasis();if(window.SPOTMap&&window.d3){state.map=window.SPOTMap.create({entities:state.meta.entities,onSelect:id=>loadCountry(id,true)});state.map.select(state.entity);}if(window.SPOTRelationships&&window.d3){state.relationships=window.SPOTRelationships.create({meta:state.meta,onSelect:id=>loadCountry(id,true)});state.relationships.select(state.entity);}if(state.entity)await loadCountry(state.entity,false);else setStatus('global-status','No reporting entities were included in this data release.',true);refreshVisibleView();
     }catch(e){setStatus('global-status',e.message,true);['headline-cards','flow-chart','source-chart','comparison-chart'].forEach(id=>$(id).setAttribute('aria-busy','false'));}
   }
   init();

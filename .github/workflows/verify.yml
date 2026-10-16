@@ -24,6 +24,8 @@ jobs:
         run: python -m pip check
       - name: Test release data and public API
         run: python -m unittest discover -s tests -v
+      - name: Check map calculations and geometry anchors
+        run: node --test tests/test_map_modes.js
       - name: Smoke test the production server
         shell: bash
         run: |
