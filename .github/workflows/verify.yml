@@ -25,16 +25,18 @@ jobs:
       - name: Test release data and public API
         run: python -m unittest discover -s tests -v
       - name: Check maps, source profiles and rankings
-        run: node --test tests/test_map_modes.js tests/test_profiles.js tests/test_rankings.js
+        run: node --test tests/test_map_modes.js tests/test_profiles.js tests/test_rankings.js tests/test_account.js
       - name: Smoke test the production server
         shell: bash
         run: |
-          gunicorn app:app --bind 127.0.0.1:8080 --workers 1 --timeout 30 > /tmp/spot-explorer-gunicorn.log 2>&1 &
+          gunicorn app:app --bind 127.0.0.1:8080 --workers 1 --timeout 30 --access-logfile - --error-logfile - > /tmp/spot-explorer-gunicorn.log 2>&1 &
           server_pid=$!
           trap 'kill "$server_pid" 2>/dev/null || true' EXIT
           for attempt in {1..30}; do
             if curl --fail --silent http://127.0.0.1:8080/healthz > /tmp/spot-explorer-health.json; then
               python -c "import json; assert json.load(open('/tmp/spot-explorer-health.json'))['status'] == 'ok'"
+              curl --fail --silent 'http://127.0.0.1:8080/account/reset?code=reset-callback-query-check' > /tmp/spot-explorer-reset.html
+              python -c "import pathlib,time; time.sleep(0.2); text=pathlib.Path('/tmp/spot-explorer-gunicorn.log').read_text(); assert '\"GET /account/reset HTTP/1.1\" 200' in text; assert 'reset-callback-query-check' not in text"
               exit 0
             fi
             sleep 1

@@ -13,9 +13,11 @@ from pathlib import Path
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlsplit
 from urllib.request import HTTPRedirectHandler, Request, build_opener
+import base64
 import hmac
 from hashlib import sha256
 import json
+import logging
 import os
 import re
 import secrets
@@ -35,6 +37,9 @@ PASSWORD_GRANT_ERRORS = {
     'invalid_credentials': 'The email or password was not recognised. Use the password set for your SPOT user, which may differ from your Supabase dashboard password.',
     'email_not_confirmed': 'Your email has not been confirmed. Open your SPOT invitation link to confirm it, or ask the SPOT owner for a new invitation.',
 }
+RESET_REQUEST_MESSAGE = ('If this address has an eligible SPOT account, check your inbox for a reset link. '
+                         'Open it in this browser within 15 minutes. Email delivery depends on the account service configuration.')
+RESET_LINK_ERROR = 'This reset link expired, was already used, or was opened in another browser. Request a new link from this browser.'
 WEB = Path(__file__).resolve().parent / 'web'
 
 
@@ -158,10 +163,21 @@ class SupabaseProvider:
     def link(self, email, kind):
         value = self.call('POST', '/admin/generate_link', {'type': kind, 'email': email}, admin=True)
         properties = value.get('properties', value)
-        token = properties.get('hashed_token')
+        token = properties.get('hashed_token') if isinstance(properties, dict) else None
         user = value.get('user')
+        # GoTrue REST returns link fields and user fields in one object; the
+        # SDK wraps them as {properties, user}. Subsequent admin lookup remains
+        # the authority for permissions; retain only identity from a flat reply.
+        if not isinstance(user, dict) and isinstance(value.get('id'), str) and isinstance(value.get('email'), str):
+            user = {'id': value['id'], 'email': value['email']}
         if not isinstance(token, str) or not 20 <= len(token) <= 2048 or not isinstance(user, dict):
             raise AuthError('The private invitation could not be created.')
+        try:
+            uuid.UUID(user.get('id', ''))
+            if email_address(user.get('email')) != email:
+                raise ValueError('Identity mismatch')
+        except (ValueError, TypeError, AttributeError, AuthError):
+            raise AuthError('The private invitation could not be created.') from None
         return user, token
 
 
@@ -178,10 +194,19 @@ class LoginSession:
     lock: threading.RLock = field(default_factory=threading.RLock, repr=False)
 
 
+@dataclass
+class RecoveryRequest:
+    uid: str = field(repr=False)
+    email: str = field(repr=False)
+    epoch: str = field(repr=False)
+    verifier: str = field(repr=False)
+    deadline: float = 0
+
+
 class SpotAccounts:
     def __init__(self, provider=None, admin_email='', *, clock=time.time):
         self.provider, self.admin_email, self.clock = provider, admin_email, clock
-        self.sessions, self.attempts = {}, {}
+        self.sessions, self.attempts, self.recoveries = {}, {}, {}
         self.lock, self.mutations = threading.RLock(), threading.RLock()
 
     @classmethod
@@ -230,6 +255,24 @@ class SpotAccounts:
     def invalidate(self, uid):
         with self.lock:
             self.sessions = {k: v for k, v in self.sessions.items() if v.uid != uid}
+            self.recoveries = {k: v for k, v in self.recoveries.items() if v.uid != uid}
+
+    def remove_recovery(self, handle):
+        with self.lock:
+            self.recoveries.pop(handle, None)
+
+    def recovery_epoch(self, user):
+        """Only the confirmed owner or a completed SPOT account may recover."""
+        if not isinstance(user, dict) or not confirmed(user):
+            raise AuthError(RESET_LINK_ERROR, 401)
+        email = email_address(user.get('email'))
+        metadata = user.get('app_metadata')
+        if email == self.admin_email and isinstance(metadata, dict) and NAMESPACE not in metadata:
+            return 'owner-bootstrap'
+        try:
+            return self.approved(user)['auth_version']
+        except AuthError:
+            raise AuthError(RESET_LINK_ERROR, 401) from None
 
     def new_session(self, payload, stage='ready'):
         provider = self.require_provider()
@@ -241,10 +284,10 @@ class SpotAccounts:
         actual = provider.call('GET', '/user', token=access)
         actual = actual.get('user', actual)
         user = provider.get_user(str(actual.get('id', '')))
-        state = self.approved(user, complete=stage == 'ready')
+        epoch = self.recovery_epoch(user) if stage == 'reset' else self.approved(user, complete=stage == 'ready')['auth_version']
         handle = secrets.token_urlsafe(48)
         now = self.clock()
-        record = LoginSession(user['id'], email_address(user['email']), state['auth_version'], stage,
+        record = LoginSession(user['id'], email_address(user['email']), epoch, stage,
                               access, refresh, now + expires, now + (SESSION_SECONDS if stage == 'ready' else SETUP_SECONDS))
         with self.lock:
             self.sessions = {k: v for k, v in self.sessions.items() if v.deadline > now}
@@ -293,12 +336,108 @@ class SpotAccounts:
             actual = provider.call('GET', '/user', token=record.access)
             actual = actual.get('user', actual)
             user = provider.get_user(record.uid)
-            state = self.approved(user, complete=stage == 'ready')
+            epoch = self.recovery_epoch(user) if stage == 'reset' else self.approved(user, complete=stage == 'ready')['auth_version']
             if (actual.get('id') != record.uid or str(actual.get('email', '')).lower() != record.email or
-                    str(user.get('email', '')).lower() != record.email or state['auth_version'] != record.epoch):
+                    str(user.get('email', '')).lower() != record.email or epoch != record.epoch):
                 self.remove(handle)
                 raise AuthError('This session was reset. Please sign in again.', 401)
         return record
+
+    def reset_request(self, email, origin):
+        """Start browser-bound PKCE without disclosing whether an address exists.
+
+        The verifier stays in bounded process memory. Unknown/ineligible
+        requests receive an identical opaque browser handle and public reply,
+        but no recovery email is requested for them.
+        """
+        provider = self.require_provider()
+        provider.invite_only()
+        user = provider.find_email(email)
+        epoch = None
+        if user:
+            try:
+                epoch = self.recovery_epoch(user)
+            except AuthError:
+                pass
+        verifier = secrets.token_urlsafe(48)
+        handle, now = secrets.token_urlsafe(48), self.clock()
+        record = RecoveryRequest(user['id'] if epoch else '', email if epoch else '', epoch or '',
+                                 verifier, now + SETUP_SECONDS)
+        with self.lock:
+            self.recoveries = {k: v for k, v in self.recoveries.items() if v.deadline > now}
+            if len(self.recoveries) >= 512:
+                raise AuthError('The account service is busy. Please try again later.')
+            self.recoveries[handle] = record
+        if epoch:
+            challenge = base64.urlsafe_b64encode(sha256(verifier.encode('ascii')).digest()).rstrip(b'=').decode('ascii')
+            try:
+                provider.call('POST', '/recover?' + urlencode({'redirect_to': origin + '/account/reset'}),
+                              {'email': email, 'code_challenge': challenge, 'code_challenge_method': 's256'})
+            except AuthError as exc:
+                # Mail delivery and account existence must not alter the public
+                # response. No provider error body or account detail is logged.
+                status = exc.status if exc.status in {401, 429, 503} else 'unknown'
+                logging.getLogger(__name__).warning('SPOT reset delivery failed operation=recover status=%s', status)
+        return handle
+
+    def reset_activate(self, handle, code):
+        provider = self.require_provider()
+        if not isinstance(code, str) or not re.fullmatch(r'[A-Za-z0-9_-]{1,2048}', code):
+            raise AuthError(RESET_LINK_ERROR, 401)
+        with self.lock:
+            recovery = self.recoveries.pop(handle, None)
+        if not recovery or not recovery.uid or recovery.deadline <= self.clock():
+            raise AuthError(RESET_LINK_ERROR, 401)
+        try:
+            provider.invite_only()
+            user = provider.get_user(recovery.uid)
+            if (email_address(user.get('email')) != recovery.email or
+                    self.recovery_epoch(user) != recovery.epoch):
+                raise AuthError(RESET_LINK_ERROR, 401)
+            payload = provider.call('POST', '/token?grant_type=pkce',
+                                    {'auth_code': code, 'code_verifier': recovery.verifier})
+            token_type = payload.get('token_type')
+            if not isinstance(token_type, str) or token_type.lower() != 'bearer':
+                raise AuthError(RESET_LINK_ERROR, 401)
+            actual = provider.call('GET', '/user', token=payload.get('access_token', ''))
+            actual = actual.get('user', actual)
+            if actual.get('id') != recovery.uid or email_address(actual.get('email')) != recovery.email:
+                raise AuthError(RESET_LINK_ERROR, 401)
+            session_handle, record = self.new_session(payload, 'reset')
+            if record.uid != recovery.uid or record.email != recovery.email or record.epoch != recovery.epoch:
+                self.remove(session_handle)
+                raise AuthError(RESET_LINK_ERROR, 401)
+            return session_handle, record
+        except AuthError as exc:
+            if exc.status == 503:
+                raise AuthError('The account service is unavailable. Request a new reset link and try again later.') from None
+            raise AuthError(RESET_LINK_ERROR, 401) from None
+
+    def reset_password(self, handle, password, repeated):
+        if not isinstance(password, str) or not 14 <= len(password) <= 1024 or password != repeated:
+            raise AuthError('Use at least 14 characters and enter the same new password twice.', 400)
+        provider = self.require_provider()
+        provider.invite_only()
+        record = self.validate(handle, 'reset')
+        with self.mutations:
+            user = provider.get_user(record.uid)
+            if (email_address(user.get('email')) != record.email or self.recovery_epoch(user) != record.epoch):
+                self.remove(handle)
+                raise AuthError(RESET_LINK_ERROR, 401)
+            # Password changes use the verified user's JWT, never an admin
+            # password override. Preserve every permission namespace verbatim.
+            provider.call('PUT', '/user', {'password': password}, token=record.access)
+            current = provider.get_user(record.uid)
+            if email_address(current.get('email')) != record.email or self.recovery_epoch(current) != record.epoch:
+                self.remove(handle)
+                raise AuthError(RESET_LINK_ERROR, 401)
+            if account_state(current) is None:
+                provider.state(current, approved=True, password_set=True, existing_account=True)
+            else:
+                provider.state(current)  # Rotate only the SPOT session epoch.
+            self.invalidate(record.uid)
+            payload = provider.call('POST', '/token?grant_type=password', {'email': record.email, 'password': password})
+            return self.new_session(payload)
 
     def login(self, email, password):
         provider = self.require_provider()
@@ -464,7 +603,12 @@ def register_auth(app):
         def wrapped(*args, **kwargs):
             try:
                 if request.query_string:
-                    raise AuthError('Account links must not contain query parameters.', 400)
+                    callback = request.path == '/account/reset' and request.method in {'GET', 'HEAD'}
+                    allowed = {'code', 'error', 'error_code', 'error_description'}
+                    if (not callback or len(request.query_string) > 8192 or
+                            any(key not in allowed or len(request.args.getlist(key)) != 1 or
+                                len(request.args[key]) > 2048 for key in request.args)):
+                        raise AuthError('Account links must not contain unsupported query parameters.', 400)
                 return function(*args, **kwargs)
             except AuthError as exc:
                 return jsonify(error=str(exc)), exc.status
@@ -483,16 +627,20 @@ def register_auth(app):
             raise AuthError('Only the SPOT owner can manage invitations.', 403)
         return record
 
-    def save_login(handle, record):
-        accounts.remove(session.get('spot_handle'))
-        accounts.remove(session.get('spot_pending'))
+    def clear_auth():
+        for key in ('spot_handle', 'spot_pending', 'spot_reset'):
+            accounts.remove(session.get(key))
+        accounts.remove_recovery(session.get('spot_recovery'))
         session.clear()
+
+    def save_login(handle, record):
+        clear_auth()
         session['spot_handle'] = handle
         return jsonify(authenticated=True, email=record.email, is_owner=record.email == accounts.admin_email, csrf=csrf())
 
     @app.after_request
     def private_accounts(response):
-        if request.path == '/account' or request.path.startswith('/api/auth/') or request.path in {'/static/account.js', '/static/account.css', '/static/account.html'}:
+        if request.path in {'/account', '/account/reset'} or request.path.startswith('/api/auth/') or request.path in {'/static/account.js', '/static/account.css', '/static/account.html'}:
             response.headers['Cache-Control'] = 'no-store, private'
             response.headers['Referrer-Policy'] = 'no-referrer'
             response.headers['X-Frame-Options'] = 'DENY'
@@ -501,6 +649,11 @@ def register_auth(app):
     @app.get('/account')
     @endpoint
     def spot_account_page():
+        return send_from_directory(WEB, 'account.html')
+
+    @app.get('/account/reset')
+    @endpoint
+    def spot_reset_page():
         return send_from_directory(WEB, 'account.html')
 
     @app.get('/api/auth/config')
@@ -512,6 +665,9 @@ def register_auth(app):
     @app.get('/api/auth/session')
     @endpoint
     def spot_auth_session():
+        if session.get('spot_reset'):
+            record = accounts.validate(session['spot_reset'], 'reset')
+            return jsonify(authenticated=False, pending_reset=True, email=record.email, csrf=csrf())
         if session.get('spot_pending'):
             record = accounts.validate(session['spot_pending'], 'password')
             user = accounts.provider.get_user(record.uid)
@@ -538,10 +694,39 @@ def register_auth(app):
     @endpoint
     def spot_auth_logout():
         data()
-        accounts.remove(session.get('spot_handle'))
-        accounts.remove(session.get('spot_pending'))
-        session.clear()
+        clear_auth()
         return jsonify(authenticated=False, csrf=csrf())
+
+    @app.post('/api/auth/reset-request')
+    @endpoint
+    def spot_auth_reset_request():
+        body = data()
+        email = email_address(body.get('email'))
+        accounts.admit(('reset-request-ip', request.remote_addr), limit=120)
+        accounts.admit(('reset-request-account', email), limit=3)
+        handle = accounts.reset_request(email, origin())
+        clear_auth()
+        session['spot_recovery'] = handle
+        return jsonify(message=RESET_REQUEST_MESSAGE, csrf=csrf())
+
+    @app.post('/api/auth/reset-activate')
+    @endpoint
+    def spot_auth_reset_activate():
+        body = data()
+        accounts.admit(('reset-activate', request.remote_addr), limit=120)
+        # Pop the browser handle even if exchange fails: it cannot be replayed.
+        recovery = session.pop('spot_recovery', None)
+        handle, record = accounts.reset_activate(recovery, body.get('code'))
+        clear_auth()
+        session['spot_reset'] = handle
+        return jsonify(authenticated=False, pending_reset=True, email=record.email, csrf=csrf())
+
+    @app.post('/api/auth/reset-password')
+    @endpoint
+    def spot_auth_reset_password():
+        body = data()
+        accounts.admit(('reset-password', request.remote_addr), limit=120)
+        return save_login(*accounts.reset_password(session.get('spot_reset'), body.get('password'), body.get('repeat_password')))
 
     @app.post('/api/auth/activate')
     @endpoint
@@ -549,9 +734,7 @@ def register_auth(app):
         body = data()
         accounts.admit(('activate', request.remote_addr), limit=120)
         handle, record = accounts.activate(body.get('token_hash'), body.get('type'), body.get('uid'))
-        accounts.remove(session.get('spot_handle'))
-        accounts.remove(session.get('spot_pending'))
-        session.clear()
+        clear_auth()
         session['spot_pending'] = handle
         user = accounts.provider.get_user(record.uid)
         return jsonify(pending=True, email=record.email, existing_account=account_state(user).get('existing_account') is True, csrf=csrf())

@@ -17,7 +17,28 @@
       <label for="login-password">Password</label><input id="login-password" name="password" type="password" autocomplete="current-password" required minlength="1" maxlength="1024">
       <button type="submit">Sign in</button>
     </form>
-    <p class="note">To join, ask the SPOT owner for a private invitation link. For a lost password, contact the owner of your authentication account.</p>
+    <button id="forgot-password-button" class="text-button" type="button">Forgot password?</button>
+    <p class="note">To join, ask the SPOT owner for a private invitation link.</p>
+  </section>
+  <section class="account-card" id="reset-request-panel" hidden>
+    <h2>Reset your password</h2>
+    <p>Enter the email address for your SPOT account. Open the email link in this browser.</p>
+    <form id="reset-request-form">
+      <label for="reset-email">Email address</label><input id="reset-email" name="email" type="email" autocomplete="username" required maxlength="254">
+      <button type="submit">Send reset email</button>
+    </form>
+    <p class="note">If COP31 uses this same authentication account, the new password will apply there too. Your access permissions stay the same.</p>
+    <button id="reset-request-back" class="text-button" type="button">Return to sign in</button>
+  </section>
+  <section class="account-card" id="reset-password-panel" hidden>
+    <h2>Choose a new password</h2><p id="reset-password-note"></p>
+    <form id="reset-password-form">
+      <label for="reset-new-password">New password</label><input id="reset-new-password" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
+      <label for="reset-repeat-password">Repeat new password</label><input id="reset-repeat-password" type="password" autocomplete="new-password" required minlength="14" maxlength="1024">
+      <p class="note">Use at least 14 characters. If COP31 uses this same authentication account, this also changes its sign-in password. Your access permissions stay the same.</p>
+      <button type="submit">Save new password</button>
+    </form>
+    <button id="reset-password-back" class="text-button" type="button">Return to sign in</button>
   </section>
   <section class="account-card" id="invitation-panel" hidden>
     <h2>Accept your invitation</h2><p>Your private link will be verified when you continue.</p>

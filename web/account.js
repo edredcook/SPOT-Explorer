@@ -1,17 +1,34 @@
 'use strict';
 (() => {
-  const $ = id => document.getElementById(id);
-  let csrf = '', invitation = null, busy = false;
-  const parameters = new URLSearchParams(location.hash.slice(1));
-  if (parameters.has('token_hash')) {
-    invitation = {token_hash: parameters.get('token_hash'), type: parameters.get('type'), uid: parameters.get('uid')};
-    history.replaceState(null, '', location.pathname);
+  const RESET_LINK_ERROR = 'This password reset link is invalid or has expired. Request a new email below and open its link in this browser.';
+  const RESET_REQUEST_MESSAGE = 'If this address has an eligible SPOT account, a reset email has been requested. Open the email link in this browser.';
+  function parseAccountLink(url) {
+    const fragment = new URLSearchParams(url.hash.slice(1));
+    if (url.pathname === '/account/reset') {
+      const query = new URLSearchParams(url.search);
+      const codes = query.getAll('code');
+      const hasParameters = Boolean(url.search || url.hash);
+      const valid = !url.hash && [...query.keys()].every(key => key === 'code') && codes.length === 1 && /^[A-Za-z0-9_-]{1,2048}$/.test(codes[0]);
+      return {resetCallback: true, resetCode: valid ? codes[0] : null, invitation: null, error: hasParameters && !valid, clearURL: hasParameters};
+    }
+    if (fragment.has('access_token') || fragment.has('refresh_token') || fragment.getAll('type').includes('recovery')) {
+      return {resetCallback: false, resetCode: null, invitation: null, error: true, clearURL: true};
+    }
+    return {resetCallback: false, resetCode: null, error: false, clearURL: fragment.has('token_hash'),
+      invitation: fragment.has('token_hash') ? {token_hash: fragment.get('token_hash'), type: fragment.get('type'), uid: fragment.get('uid')} : null};
   }
+  if (typeof module !== 'undefined' && module.exports) module.exports = {parseAccountLink};
+  if (typeof document === 'undefined') return;
+  // Capture private link data once, then clear the address before any API call.
+  const link = parseAccountLink(location);
+  if (link.clearURL) history.replaceState(null, '', location.pathname);
+  const $ = id => document.getElementById(id);
+  let csrf = '', invitation = link.invitation, busy = false;
   const status = (message, error = false) => {
     $('account-status').textContent = message;
     $('account-status').classList.toggle('error', error);
   };
-  const show = id => ['login-panel', 'invitation-panel', 'password-panel', 'signed-in-panel', 'owner-panel'].forEach(name => { $(name).hidden = name !== id; });
+  const show = id => ['login-panel', 'invitation-panel', 'password-panel', 'reset-request-panel', 'reset-password-panel', 'signed-in-panel', 'owner-panel'].forEach(name => { $(name).hidden = name !== id; });
   async function api(path, body) {
     const options = {credentials: 'same-origin', cache: 'no-store', headers: {Accept: 'application/json'}};
     if (body !== undefined) {
@@ -58,10 +75,10 @@
     }
   }
   async function signedIn(value) {
-    invitation = null;
+    invitation = null; link.resetCode = null;
     show('signed-in-panel'); $('page-title').textContent = 'Your account';
     $('signed-in-email').textContent = value.email;
-    $('login-password').value = ''; $('new-password').value = ''; $('repeat-password').value = '';
+    ['login-password', 'new-password', 'repeat-password', 'reset-new-password', 'reset-repeat-password'].forEach(id => { $(id).value = ''; });
     status('Signed in.');
     if (value.is_owner) { $('owner-panel').hidden = false; await viewers(); }
   }
@@ -78,6 +95,37 @@
     $('password-length-note').textContent = result.existing_account ? 'Use your existing authentication account password.' : 'Use at least 14 characters.';
     status('Invitation verified. Complete the form below.'); $('new-password').focus();
   }
+  function signInPanel() {
+    invitation = null; link.resetCode = null;
+    ['new-password', 'repeat-password', 'reset-new-password', 'reset-repeat-password'].forEach(id => { $(id).value = ''; });
+    show('login-panel'); $('page-title').textContent = 'Sign in'; status('Sign in with an invited SPOT account.'); $('login-email').focus();
+  }
+  function resetRequest() {
+    invitation = null; link.resetCode = null;
+    $('login-password').value = '';
+    show('reset-request-panel'); $('page-title').textContent = 'Reset your password';
+    $('reset-email').value = $('reset-email').value || $('login-email').value;
+    status('Open the email link in this browser.'); $('reset-email').focus();
+  }
+  function pendingReset(result) {
+    invitation = null; link.resetCode = null;
+    show('reset-password-panel'); $('page-title').textContent = 'Reset your password';
+    $('reset-password-note').textContent = 'Choose a new password for ' + result.email + '.';
+    status('Reset link verified. Choose your new password below.'); $('reset-new-password').focus();
+  }
+  $('forgot-password-button').addEventListener('click', resetRequest);
+  ['reset-request-back', 'reset-password-back'].forEach(id => $(id).addEventListener('click', signInPanel));
+  $('reset-request-form').addEventListener('submit', event => {
+    event.preventDefault();
+    task(async () => {
+      await api('reset-request', {email: $('reset-email').value});
+      status(RESET_REQUEST_MESSAGE);
+    });
+  });
+  $('reset-password-form').addEventListener('submit', event => {
+    event.preventDefault();
+    task(async () => signedIn(await api('reset-password', {password: $('reset-new-password').value, repeat_password: $('reset-repeat-password').value})));
+  });
   $('login-form').addEventListener('submit', event => {
     event.preventDefault();
     task(async () => signedIn(await api('login', {email: $('login-email').value, password: $('login-password').value})));
@@ -108,12 +156,25 @@
   task(async () => {
     const config = await api('config');
     if (!config.configured) { show(null); status(config.message); return; }
+    if (link.error) { resetRequest(); status(RESET_LINK_ERROR, true); return; }
+    if (link.resetCode) {
+      const code = link.resetCode; link.resetCode = null;
+      try { pendingReset(await api('reset-activate', {code})); }
+      catch (_) { resetRequest(); status(RESET_LINK_ERROR, true); }
+      return;
+    }
     if (invitation) { show('invitation-panel'); $('page-title').textContent = 'Your SPOT invitation'; status('Continue to verify your private invitation.'); return; }
     let value;
     try { value = await api('session'); }
-    catch (error) { show('login-panel'); status(error.message, true); return; }
-    if (value.pending) pendingAccount(value);
+    catch (error) {
+      if (link.resetCallback) { resetRequest(); status(RESET_LINK_ERROR, true); }
+      else { show('login-panel'); status(error.message, true); }
+      return;
+    }
+    if (value.pending_reset) pendingReset(value);
+    else if (value.pending) pendingAccount(value);
     else if (value.authenticated) await signedIn(value);
+    else if (link.resetCallback) { resetRequest(); status(RESET_LINK_ERROR, true); }
     else { show('login-panel'); status('Sign in with an invited SPOT account.'); }
   });
 })();
